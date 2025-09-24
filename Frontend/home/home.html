@@ -1,11 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlogSpace - Modern Blogging Platform</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <meta
+      name="description"
+      content="Discover amazing stories and share your thoughts on BlogSpace - the modern blogging platform"
+    />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <a href="#" class="logo">
+            <i class="fas fa-blog"></i>
+            BlogSpace
+          </a>
+        </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="#" class="nav-link active">Home</a>
+          <a href="#" class="nav-link">Categories</a>
+          <a href="#" class="nav-link">About</a>
+          <a href="#" class="nav-link">Contact</a>
+          <div class="nav-auth" id="navAuth">
+            <a href="../login/login.html" class="btn btn-outline">Login</a>
+            <a href="../sign-up/sign-up.html" class="btn btn-primary"
+              >Sign Up</a
+            >
+          </div>
+          <div class="nav-user hidden" id="navUser">
+            <div class="user-dropdown">
+              <button class="user-btn" id="userBtn">
+                <img
+                  src="https://via.placeholder.com/32"
+                  alt="Profile"
+                  class="user-avatar"
+                />
+                <span class="user-name" id="userName">User</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <a href="#" class="dropdown-item"
+                  ><i class="fas fa-user"></i> Profile</a
+                >
+                <a href="../create-post/create-post.html" class="dropdown-item"
+                  ><i class="fas fa-edit"></i> Write Post</a
+                >
+                <a href="#" class="dropdown-item"
+                  ><i class="fas fa-cog"></i> Settings</a
+                >
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" id="logoutBtn"
+                  ><i class="fas fa-sign-out-alt"></i> Logout</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          title="Toggle navigation menu"
+          aria-label="Toggle navigation menu"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="hero-title">Welcome to BlogSpace</h1>
+          <p class="hero-subtitle">
+            Discover amazing stories, share your thoughts, and connect with
+            writers from around the world
+          </p>
+          <div class="hero-actions">
+            <a href="#posts" class="btn btn-primary btn-lg">Explore Posts</a>
+            <a href="../sign-up/sign-up.html" class="btn btn-outline btn-lg"
+              >Start Writing</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filter Section -->
+    <section class="search-section">
+      <div class="container">
+        <div class="search-container">
+          <div class="search-box">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search posts..."
+              class="search-input"
+            />
+            <button
+              class="search-btn"
+              id="searchBtn"
+              title="Search posts"
+              aria-label="Search posts"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <div class="filter-options">
+            <select
+              id="categoryFilter"
+              class="filter-select"
+              title="Filter by category"
+              aria-label="Filter posts by category"
+            >
+              <option value="">All Categories</option>
+            </select>
+            <select
+              id="sortFilter"
+              class="filter-select"
+              title="Sort posts"
+              aria-label="Sort posts"
+            >
+              <option value="created_at">Latest</option>
+              <option value="view_count">Most Popular</option>
+              <option value="title">Alphabetical</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Posts -->
+    <section class="featured-section">
+      <div class="container">
+        <h2 class="section-title">Featured Posts</h2>
+        <div class="featured-posts" id="featuredPosts">
+          <div class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Loading featured posts...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content" id="posts">
+      <div class="container">
+        <div class="content-grid">
+          <!-- Posts Section -->
+          <section class="posts-section">
+            <div class="section-header">
+              <h2 class="section-title">Latest Posts</h2>
+              <div class="view-options">
+                <button
+                  class="view-btn active"
+                  data-view="grid"
+                  title="Grid view"
+                  aria-label="Switch to grid view"
+                >
+                  <i class="fas fa-th-large"></i>
+                </button>
+                <button
+                  class="view-btn"
+                  data-view="list"
+                  title="List view"
+                  aria-label="Switch to list view"
+                >
+                  <i class="fas fa-list"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="posts-container" id="postsContainer">
+              <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading posts...</span>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container" id="paginationContainer">
+              <!-- Pagination will be loaded here -->
+            </div>
+          </section>
+
+          <!-- Sidebar -->
+          <aside class="sidebar">
+            <!-- Popular Categories -->
+            <div class="sidebar-card">
+              <h3 class="sidebar-title">Popular Categories</h3>
+              <div class="categories-list" id="categoriesList">
+                <div class="loading-small">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Popular Tags -->
+            <div class="sidebar-card">
+              <h3 class="sidebar-title">Popular Tags</h3>
+              <div class="tags-cloud" id="tagsCloud">
+                <div class="loading-small">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Comments -->
+            <div class="sidebar-card">
+              <h3 class="sidebar-title">Recent Comments</h3>
+              <div class="recent-comments" id="recentComments">
+                <div class="loading-small">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <!-- Newsletter Subscription -->
+    <section class="newsletter-section">
+      <div class="container">
+        <div class="newsletter-content">
+          <h2>Stay Updated</h2>
+          <p>
+            Subscribe to our newsletter and never miss the latest posts and
+            updates
+          </p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              class="newsletter-input"
+              required
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <div class="footer-brand">
+              <a href="#" class="logo">
+                <i class="fas fa-blog"></i>
+                BlogSpace
+              </a>
+              <p>The modern blogging platform for writers and readers.</p>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Categories</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Connect</h4>
+            <div class="social-links">
+              <a href="#" title="Twitter" aria-label="Follow us on Twitter"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" title="Facebook" aria-label="Follow us on Facebook"
+                ><i class="fab fa-facebook"></i
+              ></a>
+              <a href="#" title="Instagram" aria-label="Follow us on Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" title="LinkedIn" aria-label="Follow us on LinkedIn"
+                ><i class="fab fa-linkedin"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 BlogSpace. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+  </body>
 </html>

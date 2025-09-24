@@ -1,0 +1,52 @@
+# PHP
+*.log
+*.tmp
+*.cache
+
+# Uploads (keep structure, ignore content)
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+uploads/*.gif
+uploads/*.webp
+uploads/*.pdf
+uploads/*.zip
+
+# Keep upload directories
+!uploads/avatars/
+!uploads/images/
+!uploads/media/
+
+# Configuration (security)
+config/database.php
+config/app.php
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules (if using npm)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Composer
+vendor/
+composer.lock
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Error logs
+error.log
+access.log
+debug.log

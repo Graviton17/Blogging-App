@@ -1,11 +1,458 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign-Up</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - BlogCraft</title>
+
+    <!-- Meta tags for SEO and social sharing -->
+    <meta
+      name="description"
+      content="Create your BlogCraft account and join thousands of writers sharing their stories."
+    />
+    <meta
+      name="keywords"
+      content="blog, writing, sign up, register, create account"
+    />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <!-- Background Pattern -->
+    <div class="bg-pattern"></div>
+
+    <div class="signup-container">
+      <!-- Header -->
+      <header class="signup-header">
+        <nav class="header-nav">
+          <a href="/Blogging-App/Frontend/home/home.html" class="logo">
+            <i class="fas fa-feather-alt"></i>
+            BlogCraft
+          </a>
+          <div class="header-links">
+            <a
+              href="/Blogging-App/Frontend/login/login.html"
+              class="btn btn-secondary"
+            >
+              <i class="fas fa-sign-in-alt"></i>
+              Sign In
+            </a>
+          </div>
+        </nav>
+      </header>
+
+      <!-- Main Content -->
+      <main class="signup-main">
+        <!-- Features Panel -->
+        <section class="features-panel">
+          <div class="features-content">
+            <h2>Join the BlogCraft Community</h2>
+            <div class="feature-list">
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fas fa-edit"></i>
+                </div>
+                <div class="feature-text">
+                  <h3>Rich Writing Tools</h3>
+                  <p>
+                    Create beautiful content with our advanced editor, complete
+                    with formatting, images, and code highlighting.
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="feature-text">
+                  <h3>Engaged Community</h3>
+                  <p>
+                    Connect with fellow writers, receive feedback, and grow your
+                    audience through our vibrant community.
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="feature-text">
+                  <h3>Analytics & Insights</h3>
+                  <p>
+                    Track your content performance and understand your readers
+                    with detailed analytics and insights.
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="feature-text">
+                  <h3>Mobile Optimized</h3>
+                  <p>
+                    Write and read on any device with our fully responsive
+                    platform that works everywhere.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sign Up Card -->
+        <section class="signup-card">
+          <div class="signup-header-content">
+            <h1>Create Your Account</h1>
+            <p>Start your blogging journey today</p>
+          </div>
+
+          <!-- Alert Container -->
+          <div id="alertContainer" class="alert-container"></div>
+
+          <!-- Sign Up Form -->
+          <form id="signupForm" class="signup-form" novalidate>
+            <!-- Name Fields -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName" class="form-label">
+                  <i class="fas fa-user"></i>
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="first_name"
+                  class="form-input"
+                  placeholder="Enter your first name"
+                  required
+                  minlength="2"
+                  maxlength="50"
+                />
+                <div id="firstNameError" class="form-error"></div>
+              </div>
+              <div class="form-group">
+                <label for="lastName" class="form-label">
+                  <i class="fas fa-user"></i>
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="last_name"
+                  class="form-input"
+                  placeholder="Enter your last name"
+                  required
+                  minlength="2"
+                  maxlength="50"
+                />
+                <div id="lastNameError" class="form-error"></div>
+              </div>
+            </div>
+
+            <!-- Username -->
+            <div class="form-group">
+              <label for="username" class="form-label">
+                <i class="fas fa-at"></i>
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-input"
+                placeholder="Choose a unique username"
+                required
+                minlength="3"
+                maxlength="30"
+                pattern="^[a-zA-Z0-9_]+$"
+              />
+              <div class="form-hint">
+                Letters, numbers, and underscores only
+              </div>
+              <div id="usernameError" class="form-error"></div>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label for="email" class="form-label">
+                <i class="fas fa-envelope"></i>
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-input"
+                placeholder="Enter your email address"
+                required
+              />
+              <div id="emailError" class="form-error"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <label for="password" class="form-label">
+                <i class="fas fa-lock"></i>
+                Password
+              </label>
+              <div class="password-input-wrapper">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-input"
+                  placeholder="Create a strong password"
+                  required
+                  minlength="8"
+                />
+                <button
+                  type="button"
+                  id="passwordToggle"
+                  class="password-toggle"
+                  title="Toggle password visibility"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <div class="password-strength">
+                <div class="strength-meter">
+                  <div id="strengthBar" class="strength-bar"></div>
+                </div>
+                <div id="strengthText" class="strength-text">
+                  Password strength: Weak
+                </div>
+              </div>
+              <div id="passwordError" class="form-error"></div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label">
+                <i class="fas fa-lock"></i>
+                Confirm Password
+              </label>
+              <div class="password-input-wrapper">
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirm_password"
+                  class="form-input"
+                  placeholder="Confirm your password"
+                  required
+                />
+                <button
+                  type="button"
+                  id="confirmPasswordToggle"
+                  class="password-toggle"
+                  title="Toggle password visibility"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <div id="confirmPasswordError" class="form-error"></div>
+            </div>
+
+            <!-- Bio (Optional) -->
+            <div class="form-group">
+              <label for="bio" class="form-label">
+                <i class="fas fa-quote-left"></i>
+                Bio (Optional)
+              </label>
+              <textarea
+                id="bio"
+                name="bio"
+                class="form-textarea"
+                placeholder="Tell us a bit about yourself and your writing interests..."
+                maxlength="500"
+                rows="3"
+              ></textarea>
+              <div class="char-count">
+                <span id="bioCount">0</span>/500 characters
+              </div>
+              <div id="bioError" class="form-error"></div>
+            </div>
+
+            <!-- Terms and Privacy -->
+            <div class="form-group">
+              <label class="checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  name="agree_terms"
+                  required
+                />
+                <div class="checkbox-custom"></div>
+                <span>
+                  I agree to the
+                  <a href="#" class="terms-link">Terms of Service</a>
+                  and
+                  <a href="#" class="terms-link">Privacy Policy</a>
+                </span>
+              </label>
+              <div id="agreeTermsError" class="form-error"></div>
+            </div>
+
+            <!-- Newsletter Subscription -->
+            <div class="form-group">
+              <label class="checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  id="newsletter"
+                  name="newsletter"
+                  checked
+                />
+                <div class="checkbox-custom"></div>
+                <span
+                  >Subscribe to our newsletter for writing tips and community
+                  updates</span
+                >
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              id="submitBtn"
+              class="btn btn-primary btn-full"
+            >
+              <span class="btn-text">
+                <i class="fas fa-user-plus"></i>
+                Create Account
+              </span>
+              <span class="btn-loader hidden">
+                <i class="fas fa-spinner fa-spin"></i>
+                Creating Account...
+              </span>
+            </button>
+          </form>
+
+          <!-- Social Divider -->
+          <div class="social-divider">
+            <span>or sign up with</span>
+          </div>
+
+          <!-- Social Sign Up -->
+          <div class="social-login">
+            <button id="googleSignup" class="social-btn google-btn">
+              <i class="fab fa-google"></i>
+              Google
+            </button>
+            <button id="githubSignup" class="social-btn github-btn">
+              <i class="fab fa-github"></i>
+              GitHub
+            </button>
+          </div>
+
+          <!-- Sign Up Footer -->
+          <div class="signup-footer">
+            <p>
+              Already have an account?
+              <a
+                href="/Blogging-App/Frontend/login/login.html"
+                class="signin-link"
+                >Sign in here</a
+              >
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="signup-footer-main">
+        <div class="footer-links">
+          <a href="#">About</a>
+          <a href="#">Help</a>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Contact</a>
+        </div>
+        <p>&copy; 2024 BlogCraft. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="modal hidden">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Terms of Service</h3>
+          <button
+            type="button"
+            id="termsModalClose"
+            class="modal-close"
+            title="Close modal"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            By using BlogCraft, you agree to our terms of service. Please read
+            them carefully.
+          </p>
+          <div class="terms-content">
+            <h4>1. Account Responsibilities</h4>
+            <p>
+              You are responsible for maintaining the security of your account
+              and all activities that occur under your account.
+            </p>
+
+            <h4>2. Content Guidelines</h4>
+            <p>
+              All content must comply with our community guidelines. Spam,
+              harassment, and illegal content are prohibited.
+            </p>
+
+            <h4>3. Privacy</h4>
+            <p>
+              We respect your privacy and will never sell your personal
+              information to third parties.
+            </p>
+
+            <h4>4. Service Availability</h4>
+            <p>
+              We strive to maintain 99.9% uptime but cannot guarantee
+              uninterrupted service.
+            </p>
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="acceptTerms()"
+            >
+              Accept Terms
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeTermsModal()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+  </body>
 </html>

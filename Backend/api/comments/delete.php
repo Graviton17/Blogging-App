@@ -1,0 +1,76 @@
+<?php
+session_start();
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: DELETE');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+    exit;
+}
+
+require_once '../../models/Comment.php';
+require_once '../../utils/Security.php';
+require_once '../../../config/app.php';
+
+try {
+    // Check if user is logged in
+    Security::requireLogin();
+    
+    // Get comment ID from URL parameter
+    if (!isset($_GET['id'])) {
+        throw new Exception('Comment ID is required');
+    }
+    
+    $commentId = (int)$_GET['id'];
+    if ($commentId <= 0) {
+        throw new Exception('Invalid comment ID');
+    }
+    
+    $comment = new Comment();
+    $existingComment = $comment->findById($commentId);
+    
+    if (!$existingComment) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Comment not found']);
+        exit;
+    }
+    
+    // Check if user can delete this comment
+    $canDelete = false;
+    
+    // Allow deletion if user is the comment author
+    if ($existingComment['user_id'] && $existingComment['user_id'] == Security::getCurrentUserId()) {
+        $canDelete = true;
+    }
+    
+    // Allow deletion if user is admin
+    if (Security::isAdmin()) {
+        $canDelete = true;
+    }
+    
+    if (!$canDelete) {
+        http_response_code(403);
+        echo json_encode(['error' => 'You do not have permission to delete this comment']);
+        exit;
+    }
+    
+    // Delete comment
+    $result = $comment->delete($commentId);
+    
+    if (!$result) {
+        throw new Exception('Failed to delete comment');
+    }
+    
+    echo json_encode([
+        'success' => true,
+        'message' => 'Comment deleted successfully'
+    ]);
+    
+} catch (Exception $e) {
+    http_response_code(400);
+    echo json_encode(['error' => $e->getMessage()]);
+}
+?>

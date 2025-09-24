@@ -1,0 +1,70 @@
+# BlogSpace - Apache Configuration
+
+# Security and URL rewriting rules
+
+# Enable rewrite engine
+
+RewriteEngine On
+
+# Security Headers
+
+<IfModule mod_headers.c>
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options nosniff
+    
+    # Enable XSS protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Clickjacking protection
+    Header always set X-Frame-Options SAMEORIGIN
+    
+    # Referrer policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (basic - adjust as needed)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tiny.cloud https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self';"
+</IfModule>
+
+# URL Rewriting for clean URLs
+
+# Redirect to Frontend/home/ for root access
+
+RewriteRule ^$ Frontend/home/home.html [L]
+RewriteRule ^index.php$ Frontend/home/home.html [L]
+
+# Clean URLs for frontend pages
+
+RewriteRule ^home/?$ Frontend/home/home.html [L]
+RewriteRule ^login/?$ Frontend/login/login.html [L]
+RewriteRule ^signup/?$ Frontend/sign-up/sign-up.html [L]
+RewriteRule ^register/?$ Frontend/sign-up/sign-up.html [L]
+RewriteRule ^create-post/?$ Frontend/create-post/create-post.html [L]
+RewriteRule ^write/?$ Frontend/create-post/create-post.html [L]
+
+# API Routes - ensure they work properly
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/(.\*)$ Backend/api/$1 [L,QSA]
+
+# Protect sensitive directories and files
+
+<FilesMatch "(^#._#|\.(bak|config|sql|fla|psd|ini|log|sh|inc|swp|dist)|~)$">
+Order allow,deny
+Deny from all
+Satisfy All
+</FilesMatch>
+<Files "_.php">
+Order allow,deny
+Allow from all
+</Files>
+
+<Files "config/\*">
+Order deny,allow
+Deny from all
+</Files>
+
+<Files ".env">
+Order deny,allow
+Deny from all
+</Files>
