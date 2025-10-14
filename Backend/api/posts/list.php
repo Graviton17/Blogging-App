@@ -10,9 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-require_once '../../models/Post.php';
-require_once '../../utils/Security.php';
-
 try {
     $post = new Post();
     

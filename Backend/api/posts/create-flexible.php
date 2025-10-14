@@ -3,7 +3,6 @@
 require_once '../../includes/bootstrap.php';
 require_once '../../models/Post.php';
 require_once '../../utils/Security.php';
-require_once '../../utils/FileUpload.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -45,13 +44,10 @@ try {
         }
     }
     
-    // For now, skip CSRF validation to test the basic functionality
-    // TODO: Re-enable CSRF validation once basic flow works
-    /*
+    // Verify CSRF token for security
     if (!isset($input['csrf_token']) || !Security::verifyCSRFToken($input['csrf_token'])) {
         throw new Exception('Invalid CSRF token');
     }
-    */
     
     // Validate required fields
     if (!isset($input['title']) || empty(trim($input['title']))) {

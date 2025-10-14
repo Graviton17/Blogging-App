@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function () {
           body: formData
         });
         const data = await response.json();
-        console.log('Debug response:', data);
+        // Debug response logged in console
       } catch (error) {
         console.error('Debug request failed:', error);
       }

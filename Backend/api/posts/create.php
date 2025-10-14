@@ -10,9 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once '../../models/Post.php';
-require_once '../../utils/Security.php';
-
 try {
     // Check if user is logged in
     Security::requireLogin();

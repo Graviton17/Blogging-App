@@ -9,8 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-require_once '../../utils/Security.php';
-
 try {
     // Check if user is logged in
     if (!Security::isLoggedIn()) {
