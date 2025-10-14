@@ -1,9 +1,7 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET');
-header('Access-Control-Allow-Headers: Content-Type');
+// Include bootstrap for configuration and security
+require_once '../../includes/bootstrap.php';
+require_once '../../utils/Security.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
@@ -16,8 +14,8 @@ require_once '../../utils/Security.php';
 try {
     // Check if user is logged in
     if (!Security::isLoggedIn()) {
-        http_response_code(401);
         echo json_encode([
+            'success' => false,
             'authenticated' => false,
             'message' => 'Not authenticated'
         ]);
@@ -26,6 +24,7 @@ try {
     
     // Return current user data
     echo json_encode([
+        'success' => true,
         'authenticated' => true,
         'user' => [
             'id' => $_SESSION['user_id'],

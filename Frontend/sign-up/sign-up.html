@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up - BlogCraft</title>
+    <title>Sign Up - BlogSpace</title>
 
     <!-- Meta tags for SEO and social sharing -->
     <meta
       name="description"
-      content="Create your BlogCraft account and join thousands of writers sharing their stories."
+      content="Create your BlogSpace account and join thousands of writers sharing their stories."
     />
     <meta
       name="keywords"
@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="style.css" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- Removed favicon link as file doesn't exist -->
   </head>
   <body>
     <!-- Background Pattern -->
@@ -41,15 +41,14 @@
       <!-- Header -->
       <header class="signup-header">
         <nav class="header-nav">
-          <a href="/Blogging-App/Frontend/home/home.html" class="logo">
+          <a href="../home/home.html" class="logo">
             <i class="fas fa-feather-alt"></i>
-            BlogCraft
+            BlogSpace
           </a>
           <div class="header-links">
-            <a
-              href="/Blogging-App/Frontend/login/login.html"
-              class="btn btn-secondary"
-            >
+            <a href="../about/about.html" class="nav-link">About</a>
+            <a href="../contact/contact.html" class="nav-link">Contact</a>
+            <a href="../login/login.html" class="btn btn-secondary">
               <i class="fas fa-sign-in-alt"></i>
               Sign In
             </a>
@@ -62,7 +61,7 @@
         <!-- Features Panel -->
         <section class="features-panel">
           <div class="features-content">
-            <h2>Join the BlogCraft Community</h2>
+            <h2>Join the BlogSpace Community</h2>
             <div class="feature-list">
               <div class="feature-item">
                 <div class="feature-icon">
@@ -364,11 +363,7 @@
           <div class="signup-footer">
             <p>
               Already have an account?
-              <a
-                href="/Blogging-App/Frontend/login/login.html"
-                class="signin-link"
-                >Sign in here</a
-              >
+              <a href="../login/login.html" class="signin-link">Sign in here</a>
             </p>
           </div>
         </section>
@@ -383,7 +378,7 @@
           <a href="#">Privacy</a>
           <a href="#">Contact</a>
         </div>
-        <p>&copy; 2024 BlogCraft. All rights reserved.</p>
+        <p>&copy; 2024 BlogSpace. All rights reserved.</p>
       </footer>
     </div>
 
@@ -404,7 +399,7 @@
         </div>
         <div class="modal-body">
           <p>
-            By using BlogCraft, you agree to our terms of service. Please read
+            By using BlogSpace, you agree to our terms of service. Please read
             them carefully.
           </p>
           <div class="terms-content">
@@ -452,7 +447,9 @@
       </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- API Configuration -->
+    <script src="../assets/js/api-config.js"></script>
+    <!-- Sign-up Script -->
     <script src="script.js"></script>
   </body>
 </html>

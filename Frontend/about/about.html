@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us - BlogSpace</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <meta
+      name="description"
+      content="Learn more about BlogSpace - Your platform for sharing stories and connecting with writers worldwide"
+    />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <a href="../home/home.html" class="logo">
+            <i class="fas fa-blog"></i>
+            BlogSpace
+          </a>
+        </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="../home/home.html" class="nav-link">Home</a>
+          <a href="about.html" class="nav-link active">About</a>
+          <a href="../contact/contact.html" class="nav-link">Contact</a>
+          <div class="nav-auth" id="navAuth">
+            <a href="../login/login.html" class="btn btn-outline">Login</a>
+            <a href="../sign-up/sign-up.html" class="btn btn-primary"
+              >Sign Up</a
+            >
+          </div>
+          <div class="nav-user hidden" id="navUser">
+            <div class="user-dropdown">
+              <button class="user-btn" id="userBtn">
+                <span class="user-name" id="userName">User</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <a href="../profile/profile.html" class="dropdown-item"
+                  ><i class="fas fa-user"></i> Profile</a
+                >
+                <a href="../create-post/create-post.html" class="dropdown-item"
+                  ><i class="fas fa-edit"></i> Write Post</a
+                >
+                <a href="../settings/settings.html" class="dropdown-item"
+                  ><i class="fas fa-cog"></i> Settings</a
+                >
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" id="logoutBtn"
+                  ><i class="fas fa-sign-out-alt"></i> Logout</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Toggle navigation menu"
+          title="Toggle navigation menu"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="hero-title">About BlogSpace</h1>
+          <p class="hero-subtitle">
+            Your platform for sharing stories and connecting with writers
+            worldwide
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container">
+        <!-- Mission Section -->
+        <section class="section">
+          <div class="section-content">
+            <div class="content-text">
+              <h2 class="section-title">Our Mission</h2>
+              <p class="section-description">
+                At BlogSpace, we believe that everyone has a story worth
+                sharing. Our mission is to provide a platform where writers,
+                thinkers, and creators can express themselves freely, connect
+                with like-minded individuals, and build a community around their
+                passions.
+              </p>
+              <p class="section-description">
+                We're committed to fostering a space that encourages creativity,
+                promotes meaningful dialogue, and empowers individuals to share
+                their unique perspectives with the world.
+              </p>
+            </div>
+            <div class="content-icon">
+              <i class="fas fa-bullseye"></i>
+            </div>
+          </div>
+        </section>
+
+        <!-- Values Section -->
+        <section class="section section-alt">
+          <h2 class="section-title text-center">Our Values</h2>
+          <div class="values-grid">
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <h3 class="value-title">Community</h3>
+              <p class="value-description">
+                Building a supportive community where writers and readers can
+                connect, share ideas, and grow together.
+              </p>
+            </div>
+
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-lightbulb"></i>
+              </div>
+              <h3 class="value-title">Creativity</h3>
+              <p class="value-description">
+                Encouraging creative expression through intuitive tools and a
+                platform that celebrates diverse voices and perspectives.
+              </p>
+            </div>
+
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h3 class="value-title">Integrity</h3>
+              <p class="value-description">
+                Maintaining a safe, respectful environment where authenticity
+                and quality content are valued above all else.
+              </p>
+            </div>
+
+            <div class="value-card">
+              <div class="value-icon">
+                <i class="fas fa-rocket"></i>
+              </div>
+              <h3 class="value-title">Innovation</h3>
+              <p class="value-description">
+                Continuously improving our platform with new features and tools
+                to enhance the writing and reading experience.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Story Section -->
+        <section class="section">
+          <div class="section-content reverse">
+            <div class="content-icon">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <div class="content-text">
+              <h2 class="section-title">Our Story</h2>
+              <p class="section-description">
+                BlogSpace was born from a simple idea: to create a platform that
+                makes blogging accessible, enjoyable, and rewarding for
+                everyone. What started as a small project has grown into a
+                thriving community of writers and readers from around the world.
+              </p>
+              <p class="section-description">
+                Today, BlogSpace hosts thousands of stories, articles, and
+                creative pieces across various topics and genres. We're proud to
+                be a space where ideas flourish and connections are made.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="section section-alt">
+          <h2 class="section-title text-center">What We Offer</h2>
+          <div class="features-grid">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-edit"></i>
+              </div>
+              <h3 class="feature-title">Easy-to-Use Editor</h3>
+              <p class="feature-description">
+                Write and format your posts with our intuitive editor, designed
+                for both beginners and experienced writers.
+              </p>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-comments"></i>
+              </div>
+              <h3 class="feature-title">Engage with Readers</h3>
+              <p class="feature-description">
+                Build your audience through comments, likes, and meaningful
+                interactions with your readers.
+              </p>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-tags"></i>
+              </div>
+              <h3 class="feature-title">Organize with Tags</h3>
+              <p class="feature-description">
+                Categorize your content with tags and make it easily
+                discoverable by readers interested in your topics.
+              </p>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <h3 class="feature-title">Track Your Growth</h3>
+              <p class="feature-description">
+                Monitor your post views, engagement, and see how your audience
+                grows over time.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+          <div class="cta-content">
+            <h2 class="cta-title">Ready to Share Your Story?</h2>
+            <p class="cta-description">
+              Join thousands of writers who are already sharing their passions
+              on BlogSpace
+            </p>
+            <div class="cta-actions">
+              <a href="../sign-up/sign-up.html" class="btn btn-primary btn-lg">
+                Get Started for Free
+              </a>
+              <a href="../home/home.html" class="btn btn-outline btn-lg">
+                Explore Posts
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3 class="footer-title">BlogSpace</h3>
+            <p class="footer-text">
+              Empowering writers to share their stories with the world.
+            </p>
+            <div class="social-links">
+              <a
+                href="#"
+                class="social-link"
+                title="Follow us on Twitter"
+                aria-label="Follow us on Twitter"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a
+                href="#"
+                class="social-link"
+                title="Follow us on Facebook"
+                aria-label="Follow us on Facebook"
+                ><i class="fab fa-facebook"></i
+              ></a>
+              <a
+                href="#"
+                class="social-link"
+                title="Follow us on Instagram"
+                aria-label="Follow us on Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a
+                href="#"
+                class="social-link"
+                title="Follow us on LinkedIn"
+                aria-label="Follow us on LinkedIn"
+                ><i class="fab fa-linkedin"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="footer-section">
+            <h4 class="footer-subtitle">Quick Links</h4>
+            <ul class="footer-links">
+              <li><a href="../home/home.html">Home</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="#">Contact</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4 class="footer-subtitle">Community</h4>
+            <ul class="footer-links">
+              <li><a href="#">Guidelines</a></li>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Report Issue</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2025 BlogSpace. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

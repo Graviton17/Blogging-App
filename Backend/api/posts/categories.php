@@ -1,32 +1,28 @@
 <?php
-/**
- * Categories API - Get all categories
- */
-
-// Include bootstrap
+// Include bootstrap for configuration and security
 require_once '../../includes/bootstrap.php';
-require_once '../../models/Post.php';
+require_once '../../models/Category.php';
 require_once '../../utils/Security.php';
 
-try {
-    // Only allow GET requests
-    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-        throw new Exception('Method not allowed');
-    }
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+    exit;
+}
 
-    $postModel = new Post();
-    $categories = $postModel->getCategories();
+try {
+    $category = new Category();
+    
+    // Get categories with post counts
+    $categories = $category->getAllWithPostCount();
     
     echo json_encode([
         'success' => true,
         'categories' => $categories
     ]);
-
+    
 } catch (Exception $e) {
-    http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
 }
 ?>

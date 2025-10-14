@@ -1,9 +1,9 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+// Include bootstrap for configuration and security
+require_once '../../includes/bootstrap.php';
+require_once '../../utils/Security.php';
+require_once '../../models/Database.php';
+require_once '../../models/User.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -11,39 +11,56 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once '../../utils/Security.php';
-require_once '../../models/User.php';
-
 try {
     // Check if user is logged in
     if (!Security::isLoggedIn()) {
-        throw new Exception('Not logged in');
+        echo json_encode([
+            'success' => true,
+            'message' => 'Already logged out'
+        ]);
+        exit;
     }
     
     $userId = Security::getCurrentUserId();
+    $username = $_SESSION['username'] ?? 'unknown';
     
-    // Log logout event
-    Security::logSecurityEvent('user_logout', [
-        'user_id' => $userId,
-        'username' => $_SESSION['username'] ?? 'unknown'
-    ]);
-    
-    // Clear remember me token if it exists
+    // Clear remember me token if exists (don't let this fail the logout)
     if (isset($_COOKIE['remember_token'])) {
-        $user = new User();
-        $user->deleteRememberToken($_COOKIE['remember_token']);
-        
-        // Clear the cookie
-        setcookie('remember_token', '', time() - 3600, '/', '', false, true);
+        try {
+            $user = new User();
+            $user->clearRememberToken($userId);
+            setcookie('remember_token', '', time() - 3600, '/', '', false, true);
+        } catch (Exception $e) {
+            // Continue even if clearing remember token fails
+            error_log('Failed to clear remember token: ' . $e->getMessage());
+        }
+    }
+    
+    // Log logout event (don't let this fail the logout)
+    try {
+        Security::logSecurityEvent('user_logout', [
+            'user_id' => $userId,
+            'username' => $username
+        ]);
+    } catch (Exception $e) {
+        // Continue even if logging fails
+        error_log('Failed to log logout event: ' . $e->getMessage());
+    }
+    
+    // Clear all session variables
+    $_SESSION = array();
+    
+    // Destroy the session cookie
+    if (isset($_COOKIE[session_name()])) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
     }
     
     // Destroy session
-    session_unset();
     session_destroy();
-    
-    // Start new session for CSRF token
-    session_start();
-    session_regenerate_id(true);
     
     echo json_encode([
         'success' => true,
@@ -51,7 +68,20 @@ try {
     ]);
     
 } catch (Exception $e) {
-    http_response_code(400);
-    echo json_encode(['error' => $e->getMessage()]);
+    error_log('Logout error: ' . $e->getMessage());
+    
+    // Even on error, try to clear the session
+    try {
+        $_SESSION = array();
+        session_destroy();
+    } catch (Exception $sessionError) {
+        error_log('Session destroy error: ' . $sessionError->getMessage());
+    }
+    
+    // Return success anyway - client-side logout should work
+    echo json_encode([
+        'success' => true,
+        'message' => 'Logged out (with warnings)'
+    ]);
 }
 ?>

@@ -18,7 +18,15 @@ class SignupManager {
     this.alertContainer = document.getElementById('alertContainer');
     this.termsModal = document.getElementById('termsModal');
 
-    this.apiBaseUrl = '/Blogging-App/Backend/api';
+    // Use API configuration if available, otherwise use XAMPP default
+    this.apiEndpoints = typeof API_ENDPOINTS !== 'undefined'
+      ? API_ENDPOINTS.AUTH
+      : {
+        CSRF_TOKEN: 'http://localhost/blogging-app/Backend/api/auth/csrf-token.php',
+        REGISTER: 'http://localhost/blogging-app/Backend/api/auth/register.php',
+        STATUS: 'http://localhost/blogging-app/Backend/api/auth/status.php',
+        CHECK_USERNAME: 'http://localhost/blogging-app/Backend/api/auth/check-username.php',
+      };
     this.csrfToken = '';
 
     this.init();
@@ -33,11 +41,12 @@ class SignupManager {
 
   async fetchCSRFToken() {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/auth/csrf-token.php`);
+      const url = this.apiEndpoints.CSRF_TOKEN;
+      const response = await fetch(url);
       const data = await response.json();
 
-      if (data.success && data.token) {
-        this.csrfToken = data.token;
+      if (data.success && (data.token || data.csrf_token)) {
+        this.csrfToken = data.token || data.csrf_token;
       }
     } catch (error) {
       console.error('Failed to fetch CSRF token:', error);
@@ -123,7 +132,7 @@ class SignupManager {
 
     this.inputs.username.addEventListener('invalid', (e) => {
       if (e.target.validity.valueMissing) {
-        e.target.setCustomValidity('Please choose a username');
+        e.target.setCustomValidity('Please enter a username');
       } else if (e.target.validity.tooShort) {
         e.target.setCustomValidity('Username must be at least 3 characters');
       } else if (e.target.validity.patternMismatch) {
@@ -141,7 +150,7 @@ class SignupManager {
 
     this.inputs.password.addEventListener('invalid', (e) => {
       if (e.target.validity.valueMissing) {
-        e.target.setCustomValidity('Please create a password');
+        e.target.setCustomValidity('Please enter a password');
       } else if (e.target.validity.tooShort) {
         e.target.setCustomValidity('Password must be at least 8 characters');
       }
@@ -169,7 +178,7 @@ class SignupManager {
 
   async checkExistingLogin() {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/auth/status.php`, {
+      const response = await fetch(this.apiEndpoints.STATUS, {
         credentials: 'include'
       });
 
@@ -179,7 +188,7 @@ class SignupManager {
         // User is already logged in
         this.showAlert('You are already logged in. Redirecting...', 'info');
         setTimeout(() => {
-          window.location.href = '/Blogging-App/Frontend/home/home.html';
+          window.location.href = '../home/home.html';
         }, 1500);
       }
     } catch (error) {
@@ -199,26 +208,38 @@ class SignupManager {
     this.clearAlert();
 
     try {
-      const formData = new FormData();
+      // Prepare registration data as JSON
+      const registrationData = {
+        username: this.inputs.username.value.trim(),
+        email: this.inputs.email.value.trim(),
+        password: this.inputs.password.value,
+        first_name: this.inputs.firstName.value.trim(),
+        last_name: this.inputs.lastName.value.trim(),
+        bio: this.inputs.bio.value.trim(),
+        newsletter: this.inputs.newsletter.checked,
+        csrf_token: this.csrfToken
+      };
 
-      // Add form data
-      Object.keys(this.inputs).forEach(key => {
-        if (this.inputs[key] && this.inputs[key].type !== 'checkbox') {
-          formData.append(key, this.inputs[key].value.trim());
-        } else if (this.inputs[key] && this.inputs[key].type === 'checkbox') {
-          formData.append(key, this.inputs[key].checked ? '1' : '0');
-        }
-      });
+      // Create timeout for the request
+      const timeoutId = setTimeout(() => {
+        throw new Error('Registration request timed out');
+      }, 20000); // 20 second timeout for registration
 
-      if (this.csrfToken) {
-        formData.append('csrf_token', this.csrfToken);
-      }
-
-      const response = await fetch(`${this.apiBaseUrl}/auth/register.php`, {
+      const response = await fetch(this.apiEndpoints.REGISTER, {
         method: 'POST',
-        body: formData,
-        credentials: 'include'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(registrationData),
+        signal: AbortSignal.timeout ? AbortSignal.timeout(20000) : undefined
       });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Registration request failed`);
+      }
 
       const data = await response.json();
 
@@ -235,7 +256,7 @@ class SignupManager {
 
         // Redirect after delay
         setTimeout(() => {
-          window.location.href = '/Blogging-App/Frontend/login/login.html?message=Account created successfully. Please verify your email and log in.&type=success';
+          window.location.href = '../login/login.html?message=Account created successfully. Please verify your email and log in.&type=success';
         }, 3000);
 
       } else {
@@ -251,7 +272,21 @@ class SignupManager {
 
     } catch (error) {
       console.error('Registration error:', error);
-      this.showAlert('An error occurred. Please try again.', 'error');
+
+      // Provide specific error messages based on error type
+      if (error.message.includes('timeout')) {
+        this.showAlert('Registration request timed out. Please check your connection and try again.', 'error');
+      } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        this.showAlert('Network error. Please check your internet connection and try again.', 'error');
+      } else if (error.message.includes('HTTP 500')) {
+        this.showAlert('Server error. Please try again later or contact support.', 'error');
+      } else if (error.message.includes('HTTP 429')) {
+        this.showAlert('Too many registration attempts. Please wait a few minutes and try again.', 'error');
+      } else if (error.message.includes('HTTP')) {
+        this.showAlert('Registration service is currently unavailable. Please try again later.', 'error');
+      } else {
+        this.showAlert('An unexpected error occurred. Please try again.', 'error');
+      }
     } finally {
       this.setLoading(false);
     }
@@ -419,7 +454,8 @@ class SignupManager {
     if (username.length < 3) return;
 
     try {
-      const response = await fetch(`${this.apiBaseUrl}/auth/check-username.php?username=${encodeURIComponent(username)}`);
+      const url = this.apiEndpoints.CHECK_USERNAME || `${this.apiEndpoints.REGISTER.replace('register.php', 'check-username.php')}`;
+      const response = await fetch(`${url}?username=${encodeURIComponent(username)}`);
       const data = await response.json();
 
       if (!data.available) {

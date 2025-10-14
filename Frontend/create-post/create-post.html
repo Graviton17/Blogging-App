@@ -1,338 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Post - BlogCraft</title>
-
-    <!-- Meta tags for SEO -->
-    <meta
-      name="description"
-      content="Create and publish your blog post on BlogCraft with our advanced rich text editor."
-    />
-    <meta
-      name="keywords"
-      content="blog, create post, rich text editor, writing, publish"
-    />
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post - BlogSpace</title>
+    
+    <!-- Meta tags -->
+    <meta name="description" content="Create and publish your blog post with our intuitive editor">
+    <meta name="keywords" content="blog, create post, writing, publish">
+    
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Font Awesome for icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-
-    <!-- TinyMCE Rich Text Editor -->
-    <script
-      src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js"
-      referrerpolicy="origin"
-    ></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <!-- Styles -->
-    <link rel="stylesheet" href="style.css" />
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  </head>
-  <body>
-    <!-- Background Pattern -->
-    <div class="bg-pattern"></div>
-
-    <div class="create-post-container">
-      <!-- Header -->
-      <header class="create-post-header">
-        <nav class="header-nav">
-          <a href="/Blogging-App/Frontend/home/home.html" class="logo">
-            <i class="fas fa-feather-alt"></i>
-            BlogCraft
-          </a>
-          <div class="header-actions">
-            <button type="button" id="saveDraftBtn" class="btn btn-secondary">
-              <i class="fas fa-save"></i>
-              Save Draft
-            </button>
-            <button type="button" id="previewBtn" class="btn btn-secondary">
-              <i class="fas fa-eye"></i>
-              Preview
-            </button>
-            <div class="user-menu">
-              <button
-                type="button"
-                id="userMenuBtn"
-                class="user-avatar"
-                title="User menu"
-              >
-                <i class="fas fa-user"></i>
-              </button>
-              <div id="userDropdown" class="user-dropdown hidden">
-                <a href="/Blogging-App/Frontend/profile/" class="dropdown-item">
-                  <i class="fas fa-user-circle"></i>
-                  Profile
-                </a>
-                <a
-                  href="/Blogging-App/Frontend/dashboard/"
-                  class="dropdown-item"
-                >
-                  <i class="fas fa-tachometer-alt"></i>
-                  Dashboard
-                </a>
-                <div class="dropdown-divider"></div>
-                <button
-                  type="button"
-                  id="logoutBtn"
-                  class="dropdown-item logout-btn"
-                >
-                  <i class="fas fa-sign-out-alt"></i>
-                  Logout
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../home/home.html" class="nav-logo">
+                <i class="fas fa-feather-alt"></i>
+                <span>BlogSpace</span>
+            </a>
+            
+            <div class="nav-actions">
+                <button type="button" id="saveDraftBtn" class="btn btn-outline">
+                    <i class="fas fa-save"></i>
+                    Save Draft
                 </button>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </header>
-
-      <!-- Main Content -->
-      <main class="create-post-main">
-        <!-- Alert Container -->
-        <div id="alertContainer" class="alert-container"></div>
-
-        <!-- Post Form -->
-        <form id="postForm" class="post-form" novalidate>
-          <!-- Post Title -->
-          <div class="form-group title-group">
-            <input
-              type="text"
-              id="postTitle"
-              name="title"
-              class="post-title-input"
-              placeholder="Enter your post title..."
-              required
-              maxlength="200"
-              autocomplete="off"
-            />
-            <div id="titleError" class="form-error"></div>
-            <div class="char-count title-count">
-              <span id="titleCount">0</span>/200 characters
-            </div>
-          </div>
-
-          <!-- Post Meta -->
-          <div class="post-meta">
-            <div class="meta-row">
-              <!-- Category Selection -->
-              <div class="form-group">
-                <label for="category" class="form-label">
-                  <i class="fas fa-folder"></i>
-                  Category
-                </label>
-                <select
-                  id="category"
-                  name="category_id"
-                  class="form-select"
-                  required
-                >
-                  <option value="">Select a category...</option>
-                  <!-- Categories will be loaded dynamically -->
-                </select>
-                <div id="categoryError" class="form-error"></div>
-              </div>
-
-              <!-- Status Selection -->
-              <div class="form-group">
-                <label for="status" class="form-label">
-                  <i class="fas fa-globe"></i>
-                  Status
-                </label>
-                <select id="status" name="status" class="form-select" required>
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                  <option value="private">Private</option>
-                </select>
-                <div id="statusError" class="form-error"></div>
-              </div>
-            </div>
-
-            <!-- Tags Input -->
-            <div class="form-group">
-              <label for="tags" class="form-label">
-                <i class="fas fa-tags"></i>
-                Tags
-              </label>
-              <div class="tags-input-wrapper">
-                <div id="tagsContainer" class="tags-container"></div>
-                <input
-                  type="text"
-                  id="tagsInput"
-                  class="tags-input"
-                  placeholder="Add tags (press Enter or comma to add)..."
-                />
-              </div>
-              <div class="form-hint">
-                Add relevant tags to help readers discover your post
-              </div>
-              <div id="tagsError" class="form-error"></div>
-            </div>
-
-            <!-- Excerpt -->
-            <div class="form-group">
-              <label for="excerpt" class="form-label">
-                <i class="fas fa-quote-left"></i>
-                Excerpt (Optional)
-              </label>
-              <textarea
-                id="excerpt"
-                name="excerpt"
-                class="form-textarea excerpt-textarea"
-                placeholder="Write a brief summary of your post..."
-                maxlength="300"
-                rows="3"
-              ></textarea>
-              <div class="char-count excerpt-count">
-                <span id="excerptCount">0</span>/300 characters
-              </div>
-              <div id="excerptError" class="form-error"></div>
-            </div>
-          </div>
-
-          <!-- Rich Text Editor -->
-          <div class="form-group editor-group">
-            <label for="content" class="form-label">
-              <i class="fas fa-edit"></i>
-              Content
-            </label>
-            <div class="editor-wrapper">
-              <textarea
-                id="content"
-                name="content"
-                class="editor-content"
-              ></textarea>
-            </div>
-            <div id="contentError" class="form-error"></div>
-          </div>
-
-          <!-- Featured Image -->
-          <div class="form-group featured-image-group">
-            <label class="form-label">
-              <i class="fas fa-image"></i>
-              Featured Image (Optional)
-            </label>
-
-            <div class="image-upload-area" id="imageUploadArea">
-              <div class="upload-placeholder">
-                <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                <p class="upload-text">
-                  <strong>Click to upload</strong> or drag and drop
-                </p>
-                <p class="upload-hint">PNG, JPG, GIF up to 5MB</p>
-              </div>
-
-              <div id="imagePreview" class="image-preview hidden">
-                <img id="previewImg" src="" alt="Featured image preview" />
-                <div class="image-actions">
-                  <button
-                    type="button"
-                    id="changeImageBtn"
-                    class="btn btn-secondary btn-sm"
-                  >
-                    <i class="fas fa-edit"></i>
-                    Change
-                  </button>
-                  <button
-                    type="button"
-                    id="removeImageBtn"
-                    class="btn btn-danger btn-sm"
-                  >
-                    <i class="fas fa-trash"></i>
-                    Remove
-                  </button>
+                
+                <button type="button" id="previewBtn" class="btn btn-outline">
+                    <i class="fas fa-eye"></i>
+                    Preview
+                </button>
+                
+                <div class="user-menu">
+                    <button type="button" id="userMenuBtn" class="user-avatar" title="User menu">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div id="userDropdown" class="dropdown-menu">
+                        <a href="../home/home.html" class="dropdown-item">
+                            <i class="fas fa-home"></i>
+                            Home
+                        </a>
+                        <a href="../about/about.html" class="dropdown-item">
+                            <i class="fas fa-info-circle"></i>
+                            About
+                        </a>
+                        <a href="../contact/contact.html" class="dropdown-item">
+                            <i class="fas fa-envelope"></i>
+                            Contact
+                        </a>
+                        <a href="../profile/profile.html" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i>
+                            Profile
+                        </a>
+                        <a href="../settings/settings.html" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                        <hr class="dropdown-divider">
+                        <button type="button" id="logoutBtn" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </div>
                 </div>
-              </div>
-
-              <input
-                type="file"
-                id="featuredImage"
-                name="featured_image"
-                accept="image/*"
-                class="hidden"
-                title="Upload featured image"
-              />
             </div>
-            <div id="featuredImageError" class="form-error"></div>
-          </div>
+        </div>
+    </nav>
 
-          <!-- Form Actions -->
-          <div class="form-actions">
-            <button type="button" id="cancelBtn" class="btn btn-secondary">
-              <i class="fas fa-times"></i>
-              Cancel
-            </button>
-            <button type="submit" id="publishBtn" class="btn btn-primary">
-              <span class="btn-text">
-                <i class="fas fa-rocket"></i>
-                <span id="publishText">Publish Post</span>
-              </span>
-              <span class="btn-loader hidden">
-                <i class="fas fa-spinner fa-spin"></i>
-                Publishing...
-              </span>
-            </button>
-          </div>
-        </form>
-      </main>
-    </div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Alert Container -->
+            <div id="alertContainer" class="alert-container"></div>
+            
+            <!-- Post Form -->
+            <form id="postForm" class="post-form">
+                <!-- Title Section -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            id="postTitle" 
+                            name="title" 
+                            class="form-input title-input" 
+                            placeholder="Enter your post title..."
+                            required
+                            maxlength="200"
+                        >
+                        <div class="form-error" id="titleError"></div>
+                        <div class="char-count">
+                            <span id="titleCount">0</span>/200
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post Meta Section -->
+                <div class="form-section meta-section">
+                    <div class="meta-grid">
+                        <div class="form-group">
+                            <label for="category" class="form-label">
+                                <i class="fas fa-folder"></i>
+                                Category
+                            </label>
+                            <select id="category" name="category_id" class="form-select" required>
+                                <option value="">Select a category...</option>
+                            </select>
+                            <div class="form-error" id="categoryError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status" class="form-label">
+                                <i class="fas fa-globe"></i>
+                                Status
+                            </label>
+                            <select id="status" name="status" class="form-select" required>
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                                <option value="private">Private</option>
+                            </select>
+                            <div class="form-error" id="statusError"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="form-group">
+                        <label for="tagsInput" class="form-label">
+                            <i class="fas fa-tags"></i>
+                            Tags
+                        </label>
+                        <div class="tags-wrapper">
+                            <div id="tagsContainer" class="tags-container"></div>
+                            <input 
+                                type="text" 
+                                id="tagsInput" 
+                                class="form-input tags-input" 
+                                placeholder="Add tags (press Enter to add)..."
+                            >
+                        </div>
+                        <div class="form-hint">Add relevant tags to help readers discover your post</div>
+                        <div class="form-error" id="tagsError"></div>
+                    </div>
+
+                    <!-- Excerpt -->
+                    <div class="form-group">
+                        <label for="excerpt" class="form-label">
+                            <i class="fas fa-quote-left"></i>
+                            Excerpt <span class="optional">(Optional)</span>
+                        </label>
+                        <textarea 
+                            id="excerpt" 
+                            name="excerpt" 
+                            class="form-textarea" 
+                            placeholder="Write a brief summary of your post..."
+                            maxlength="300"
+                            rows="3"
+                        ></textarea>
+                        <div class="char-count">
+                            <span id="excerptCount">0</span>/300
+                        </div>
+                        <div class="form-error" id="excerptError"></div>
+                    </div>
+                </div>
+
+                <!-- Content Section -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="content" class="form-label">
+                            <i class="fas fa-edit"></i>
+                            Content <span class="required">*</span>
+                        </label>
+                        <div class="editor-wrapper">
+                            <textarea 
+                                id="content" 
+                                name="content" 
+                                class="form-textarea content-editor" 
+                                placeholder="Start writing your amazing content..."
+                                required
+                                rows="15"
+                            ></textarea>
+                        </div>
+                        <div class="form-error" id="contentError"></div>
+                    </div>
+                </div>
+
+                <!-- Featured Image Section -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-image"></i>
+                            Featured Image <span class="optional">(Optional)</span>
+                        </label>
+                        
+                        <div class="image-upload-wrapper" id="imageUploadArea">
+                            <div class="upload-area">
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p><strong>Click to upload</strong> or drag and drop</p>
+                                    <p class="upload-hint">PNG, JPG, GIF up to 5MB</p>
+                                </div>
+                            </div>
+                            
+                            <div id="imagePreview" class="image-preview hidden">
+                                <img id="previewImg" src="" alt="Preview">
+                                <div class="image-actions">
+                                    <button type="button" id="changeImageBtn" class="btn btn-sm btn-outline">
+                                        <i class="fas fa-edit"></i>
+                                        Change
+                                    </button>
+                                    <button type="button" id="removeImageBtn" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <input 
+                                type="file" 
+                                id="featuredImage" 
+                                name="featured_image" 
+                                accept="image/*" 
+                                class="hidden"
+                                title="Upload featured image"
+                                aria-label="Upload featured image"
+                            >
+                        </div>
+                        <div class="form-error" id="featuredImageError"></div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <div class="actions-left">
+                        <button type="button" id="cancelBtn" class="btn btn-outline">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                    </div>
+                    
+                    <div class="actions-right">
+                        <button type="button" id="saveDraftBtn2" class="btn btn-outline">
+                            <i class="fas fa-save"></i>
+                            Save Draft
+                        </button>
+                        <button type="submit" id="publishBtn" class="btn btn-primary">
+                            <span class="btn-text">
+                                <i class="fas fa-rocket"></i>
+                                Publish Post
+                            </span>
+                            <span class="btn-loader hidden">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Publishing...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+        </div>
+    </main>
 
     <!-- Preview Modal -->
     <div id="previewModal" class="modal hidden">
-      <div class="modal-overlay"></div>
-      <div class="modal-content preview-modal-content">
-        <div class="modal-header">
-          <h3>Post Preview</h3>
-          <button
-            type="button"
-            id="closePreviewBtn"
-            class="modal-close"
-            title="Close preview"
-          >
-            <i class="fas fa-times"></i>
-          </button>
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Post Preview</h3>
+                <button type="button" id="closePreviewBtn" class="modal-close" title="Close preview">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <article class="preview-article">
+                    <header class="preview-header">
+                        <div id="previewFeaturedImage" class="preview-featured-image hidden"></div>
+                        <h1 id="previewTitle" class="preview-title">Post Title</h1>
+                        <div class="preview-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-folder"></i>
+                                <span id="previewCategory">Category</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                <span id="previewDate">Today</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-user"></i>
+                                <span id="previewAuthor">Author</span>
+                            </div>
+                        </div>
+                        <div id="previewTags" class="preview-tags"></div>
+                        <div id="previewExcerpt" class="preview-excerpt hidden"></div>
+                    </header>
+                    <div id="previewContent" class="preview-content"></div>
+                </article>
+            </div>
         </div>
-        <div class="modal-body preview-body">
-          <article class="preview-article">
-            <header class="preview-header">
-              <div
-                id="previewFeaturedImage"
-                class="preview-featured-image hidden"
-              ></div>
-              <h1 id="previewTitle" class="preview-title">Post Title</h1>
-              <div class="preview-meta">
-                <div class="preview-meta-item">
-                  <i class="fas fa-folder"></i>
-                  <span id="previewCategory">Category</span>
-                </div>
-                <div class="preview-meta-item">
-                  <i class="fas fa-calendar"></i>
-                  <span id="previewDate"></span>
-                </div>
-                <div class="preview-meta-item">
-                  <i class="fas fa-user"></i>
-                  <span id="previewAuthor">Author</span>
-                </div>
-              </div>
-              <div id="previewTags" class="preview-tags"></div>
-              <div id="previewExcerpt" class="preview-excerpt hidden"></div>
-            </header>
-            <div id="previewContent" class="preview-content"></div>
-          </article>
-        </div>
-      </div>
     </div>
 
     <!-- Scripts -->
+    <script src="../assets/js/api-config.js"></script>
     <script src="script.js"></script>
-  </body>
+</body>
 </html>

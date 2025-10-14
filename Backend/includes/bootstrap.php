@@ -8,18 +8,49 @@
 if (session_status() === PHP_SESSION_NONE) {
     // Set secure session configuration
     ini_set('session.cookie_httponly', 1);
-    ini_set('session.cookie_secure', 1);
     ini_set('session.use_strict_mode', 1);
-    ini_set('session.cookie_samesite', 'Strict');
+    ini_set('session.cookie_samesite', 'Lax');
+    
+    // Set secure flag based on environment
+    if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+        ini_set('session.cookie_secure', 1);
+    }
+    
+    // Set session lifetime from config
+    if (defined('SESSION_LIFETIME')) {
+        ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
+        ini_set('session.cookie_lifetime', SESSION_LIFETIME);
+    }
+    
+    // Use a custom session name for security
+    session_name('BLOGGING_APP_SESSION');
     
     session_start();
+    
+    // Regenerate session ID on first login or important operations
+    if (!isset($_SESSION['initiated'])) {
+        session_regenerate_id(true);
+        $_SESSION['initiated'] = true;
+        $_SESSION['created_at'] = time();
+    }
+    
+    // Check for session timeout
+    if (isset($_SESSION['created_at']) && defined('SESSION_LIFETIME')) {
+        if (time() - $_SESSION['created_at'] > SESSION_LIFETIME) {
+            session_unset();
+            session_destroy();
+            session_start();
+        } else {
+            // Update last activity time
+            $_SESSION['last_activity'] = time();
+        }
+    }
 }
+
+// Load configuration files first
+require_once __DIR__ . '/../../config/app.php';
 
 // Set error reporting for development
-if (!defined('APP_ENV')) {
-    define('APP_ENV', 'development');
-}
-
 if (APP_ENV === 'development') {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
@@ -31,21 +62,17 @@ if (APP_ENV === 'development') {
 // Set default timezone
 date_default_timezone_set('UTC');
 
-// Load configuration files
+// Load CORS configuration only in web context
+if (isset($_SERVER['HTTP_HOST'])) {
+    require_once __DIR__ . '/../cors.php';
+}
+
+// Load database configuration
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../config/app.php';
 
-// Set CORS headers for API endpoints
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: ' . (APP_ENV === 'development' ? '*' : APP_URL));
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token');
-header('Access-Control-Allow-Credentials: true');
-
-// Handle preflight OPTIONS requests
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+// Set Content-Type header only in web context
+if (isset($_SERVER['HTTP_HOST'])) {
+    header('Content-Type: application/json');
 }
 
 // Define upload directory constants

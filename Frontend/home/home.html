@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BlogSpace - Modern Blogging Platform</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -26,9 +30,8 @@
         </div>
         <div class="nav-menu" id="navMenu">
           <a href="#" class="nav-link active">Home</a>
-          <a href="#" class="nav-link">Categories</a>
-          <a href="#" class="nav-link">About</a>
-          <a href="#" class="nav-link">Contact</a>
+          <a href="../about/about.html" class="nav-link">About</a>
+          <a href="../contact/contact.html" class="nav-link">Contact</a>
           <div class="nav-auth" id="navAuth">
             <a href="../login/login.html" class="btn btn-outline">Login</a>
             <a href="../sign-up/sign-up.html" class="btn btn-primary"
@@ -38,22 +41,17 @@
           <div class="nav-user hidden" id="navUser">
             <div class="user-dropdown">
               <button class="user-btn" id="userBtn">
-                <img
-                  src="https://via.placeholder.com/32"
-                  alt="Profile"
-                  class="user-avatar"
-                />
                 <span class="user-name" id="userName">User</span>
                 <i class="fas fa-chevron-down"></i>
               </button>
               <div class="dropdown-menu" id="dropdownMenu">
-                <a href="#" class="dropdown-item"
+                <a href="../profile/profile.html" class="dropdown-item"
                   ><i class="fas fa-user"></i> Profile</a
                 >
                 <a href="../create-post/create-post.html" class="dropdown-item"
                   ><i class="fas fa-edit"></i> Write Post</a
                 >
-                <a href="#" class="dropdown-item"
+                <a href="../settings/settings.html" class="dropdown-item"
                   ><i class="fas fa-cog"></i> Settings</a
                 >
                 <div class="dropdown-divider"></div>
@@ -77,62 +75,53 @@
 
     <!-- Hero Section -->
     <section class="hero">
+      <div class="hero-background">
+        <div class="hero-shape hero-shape-1"></div>
+        <div class="hero-shape hero-shape-2"></div>
+        <div class="hero-shape hero-shape-3"></div>
+      </div>
       <div class="container">
         <div class="hero-content">
-          <h1 class="hero-title">Welcome to BlogSpace</h1>
+          <div class="hero-badge">
+            <i class="fas fa-fire"></i>
+            <span>Trending Stories & Ideas</span>
+          </div>
+          <h1 class="hero-title">
+            Discover Stories That
+            <span class="hero-title-highlight">Inspire</span>
+          </h1>
           <p class="hero-subtitle">
-            Discover amazing stories, share your thoughts, and connect with
-            writers from around the world
+            Join a vibrant community of writers and readers. Share your
+            thoughts, explore diverse perspectives, and connect with creative
+            minds from around the world.
           </p>
           <div class="hero-actions">
-            <a href="#posts" class="btn btn-primary btn-lg">Explore Posts</a>
-            <a href="../sign-up/sign-up.html" class="btn btn-outline btn-lg"
-              >Start Writing</a
+            <a href="#posts" class="btn btn-primary btn-lg">
+              <i class="fas fa-compass"></i>
+              <span>Explore Posts</span>
+            </a>
+            <a
+              href="../sign-up/sign-up.html"
+              class="btn btn-outline-white btn-lg"
+              id="heroSignupBtn"
             >
+              <i class="fas fa-pen-fancy"></i>
+              <span>Start Writing</span>
+            </a>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Search & Filter Section -->
-    <section class="search-section">
-      <div class="container">
-        <div class="search-container">
-          <div class="search-box">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Search posts..."
-              class="search-input"
-            />
-            <button
-              class="search-btn"
-              id="searchBtn"
-              title="Search posts"
-              aria-label="Search posts"
-            >
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-          <div class="filter-options">
-            <select
-              id="categoryFilter"
-              class="filter-select"
-              title="Filter by category"
-              aria-label="Filter posts by category"
-            >
-              <option value="">All Categories</option>
-            </select>
-            <select
-              id="sortFilter"
-              class="filter-select"
-              title="Sort posts"
-              aria-label="Sort posts"
-            >
-              <option value="created_at">Latest</option>
-              <option value="view_count">Most Popular</option>
-              <option value="title">Alphabetical</option>
-            </select>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hero-stat-number">10K+</div>
+              <div class="hero-stat-label">Active Writers</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-number">50K+</div>
+              <div class="hero-stat-label">Stories Published</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-number">100K+</div>
+              <div class="hero-stat-label">Monthly Readers</div>
+            </div>
           </div>
         </div>
       </div>
@@ -194,16 +183,6 @@
 
           <!-- Sidebar -->
           <aside class="sidebar">
-            <!-- Popular Categories -->
-            <div class="sidebar-card">
-              <h3 class="sidebar-title">Popular Categories</h3>
-              <div class="categories-list" id="categoriesList">
-                <div class="loading-small">
-                  <i class="fas fa-spinner fa-spin"></i>
-                </div>
-              </div>
-            </div>
-
             <!-- Popular Tags -->
             <div class="sidebar-card">
               <h3 class="sidebar-title">Popular Tags</h3>
@@ -304,7 +283,9 @@
       </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- API Configuration -->
+    <script src="../assets/js/api-config.js"></script>
+    <!-- Home Page Script -->
     <script src="script.js"></script>
   </body>
 </html>

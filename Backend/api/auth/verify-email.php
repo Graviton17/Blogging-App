@@ -1,18 +1,13 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET');
-header('Access-Control-Allow-Headers: Content-Type');
+// Include bootstrap for configuration and security
+require_once '../../includes/bootstrap.php';
+require_once '../../models/User.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
     exit;
 }
-
-require_once '../../models/User.php';
-require_once '../../../config/app.php';
 
 try {
     // Get token from URL parameter

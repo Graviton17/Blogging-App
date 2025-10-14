@@ -7,7 +7,6 @@ CREATE TABLE posts (
     slug VARCHAR(255) UNIQUE NOT NULL,
     content LONGTEXT NOT NULL,
     excerpt TEXT,
-    featured_image VARCHAR(255),
     author_id INT NOT NULL,
     status ENUM('draft', 'published', 'archived') DEFAULT 'draft',
     visibility ENUM('public', 'private', 'password_protected') DEFAULT 'public',

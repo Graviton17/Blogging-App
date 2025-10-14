@@ -1,5 +1,20 @@
-// API Configuration
-const API_BASE = '/Blogging-App/Backend/api';
+// API Configuration - Use centralized config or fallback
+const API_BASE = typeof API_ENDPOINTS !== 'undefined'
+  ? API_ENDPOINTS
+  : {
+    AUTH: {
+      STATUS: 'http://localhost/blogging-app/Backend/api/auth/status.php',
+      LOGOUT: 'http://localhost/blogging-app/Backend/api/auth/logout.php',
+    },
+    POSTS: {
+      LIST: 'http://localhost/blogging-app/Backend/api/posts/list.php',
+      CATEGORIES: 'http://localhost/blogging-app/Backend/api/posts/categories.php',
+      GET: 'http://localhost/blogging-app/Backend/api/posts/get.php',
+    },
+    COMMENTS: {
+      LIST: 'http://localhost/blogging-app/Backend/api/comments/list.php',
+    }
+  };
 
 // Global State
 let currentUser = null;
@@ -16,18 +31,14 @@ const dropdownMenu = document.getElementById('dropdownMenu');
 const logoutBtn = document.getElementById('logoutBtn');
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const categoryFilter = document.getElementById('categoryFilter');
-const sortFilter = document.getElementById('sortFilter');
 const featuredPosts = document.getElementById('featuredPosts');
 const postsContainer = document.getElementById('postsContainer');
 const paginationContainer = document.getElementById('paginationContainer');
-const categoriesList = document.getElementById('categoriesList');
 const tagsCloud = document.getElementById('tagsCloud');
 const recentComments = document.getElementById('recentComments');
 const viewBtns = document.querySelectorAll('.view-btn');
 const newsletterForm = document.getElementById('newsletterForm');
+const heroSignupBtn = document.getElementById('heroSignupBtn');
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', function () {
@@ -43,7 +54,6 @@ async function initializeApp() {
     await Promise.all([
       loadPosts(),
       loadFeaturedPosts(),
-      loadCategories(),
       loadTags(),
       loadRecentComments()
     ]);
@@ -60,7 +70,24 @@ async function initializeApp() {
 // Authentication
 async function checkAuthStatus() {
   try {
-    const response = await fetch(`${API_BASE}/auth/status.php`);
+    const url = API_BASE.AUTH?.STATUS || `${API_BASE}/auth/status.php`;
+
+    // Create a timeout for the request
+    const timeoutId = setTimeout(() => {
+      throw new Error('Authentication check timed out');
+    }, 10000); // 10 second timeout
+
+    const response = await fetch(url, {
+      credentials: 'include', // Re-enabled after fixing CORS configuration
+      signal: AbortSignal.timeout ? AbortSignal.timeout(10000) : undefined
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Authentication check failed`);
+    }
+
     const data = await response.json();
 
     if (data.authenticated) {
@@ -71,6 +98,17 @@ async function checkAuthStatus() {
     }
   } catch (error) {
     console.error('Auth check failed:', error);
+
+    // Different error handling based on error type
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      console.warn('Network error during auth check - user may be offline');
+    } else if (error.message.includes('timeout')) {
+      console.warn('Auth check timed out - server may be slow');
+    } else if (error.message.includes('HTTP')) {
+      console.warn('Server error during auth check:', error.message);
+    }
+
+    // Always fall back to unauthenticated state on error
     updateAuthUI(false);
   }
 }
@@ -80,29 +118,60 @@ function updateAuthUI(isAuthenticated) {
     navAuth.classList.add('hidden');
     navUser.classList.remove('hidden');
     userName.textContent = currentUser.first_name || currentUser.username;
+    // Hide hero signup button when user is authenticated
+    if (heroSignupBtn) {
+      heroSignupBtn.style.display = 'none';
+    }
   } else {
     navAuth.classList.remove('hidden');
     navUser.classList.add('hidden');
+    // Show hero signup button when user is not authenticated
+    if (heroSignupBtn) {
+      heroSignupBtn.style.display = '';
+    }
   }
 }
 
 async function logout() {
   try {
-    const response = await fetch(`${API_BASE}/auth/logout.php`, {
+    const url = API_BASE.AUTH?.LOGOUT || `${API_BASE}/auth/logout.php`;
+
+    const timeoutId = setTimeout(() => {
+      throw new Error('Logout request timed out');
+    }, 10000);
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      }
+      },
+      credentials: 'include',
+      signal: AbortSignal.timeout ? AbortSignal.timeout(10000) : undefined
     });
+
+    clearTimeout(timeoutId);
 
     if (response.ok) {
       currentUser = null;
       updateAuthUI(false);
       showNotification('Logged out successfully', 'success');
+    } else {
+      throw new Error(`HTTP ${response.status}: Logout request failed`);
     }
   } catch (error) {
     console.error('Logout failed:', error);
-    showNotification('Logout failed', 'error');
+
+    // Even if logout fails on server, clear local state
+    currentUser = null;
+    updateAuthUI(false);
+
+    if (error.message.includes('timeout')) {
+      showNotification('Logout request timed out, but you have been logged out locally', 'warning');
+    } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      showNotification('Network error during logout, but you have been logged out locally', 'warning');
+    } else {
+      showNotification('Logout failed on server, but you have been logged out locally', 'warning');
+    }
   }
 }
 
@@ -117,7 +186,9 @@ async function loadPosts(page = 1, filters = {}) {
       ...filters
     });
 
-    const response = await fetch(`${API_BASE}/posts/list.php?${params}`);
+    const response = await fetch(`${API_BASE.POSTS.LIST}?${params}`, {
+      credentials: 'include' // Re-enabled after fixing CORS configuration
+    });
     const data = await response.json();
 
     if (data.success) {
@@ -136,7 +207,9 @@ async function loadPosts(page = 1, filters = {}) {
 
 async function loadFeaturedPosts() {
   try {
-    const response = await fetch(`${API_BASE}/posts/list.php?limit=3&sort=view_count&order=DESC`);
+    const response = await fetch(`${API_BASE.POSTS.LIST}?limit=3&sort=view_count&order=DESC`, {
+      credentials: 'include' // Re-enabled after fixing CORS configuration
+    });
     const data = await response.json();
 
     if (data.success) {
@@ -147,23 +220,6 @@ async function loadFeaturedPosts() {
   } catch (error) {
     console.error('Failed to load featured posts:', error);
     showError(featuredPosts, 'Failed to load featured posts');
-  }
-}
-
-async function loadCategories() {
-  try {
-    const response = await fetch(`${API_BASE}/posts/categories.php`);
-    const data = await response.json();
-
-    if (data.success) {
-      renderCategories(data.categories);
-      populateCategoryFilter(data.categories);
-    } else {
-      throw new Error(data.message || 'Failed to load categories');
-    }
-  } catch (error) {
-    console.error('Failed to load categories:', error);
-    showError(categoriesList, 'Failed to load categories');
   }
 }
 
@@ -225,14 +281,11 @@ function renderPosts(posts) {
 }
 
 function createPostCard(post) {
-  const imageUrl = post.featured_image_url || 'https://via.placeholder.com/400x200?text=No+Image';
   const excerpt = post.excerpt || stripHtml(post.content).substring(0, 150) + '...';
   const publishedDate = formatDate(post.created_at);
 
   return `
         <article class="post-card ${currentView}-view">
-            <img src="${imageUrl}" alt="${escapeHtml(post.title)}" class="post-image" 
-                 onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
             <div class="post-content">
                 <div class="post-meta">
                     <span><i class="fas fa-user"></i> ${escapeHtml(post.author_name || 'Anonymous')}</span>
@@ -240,17 +293,17 @@ function createPostCard(post) {
                     <span><i class="fas fa-eye"></i> ${post.view_count || 0}</span>
                 </div>
                 <h3 class="post-title">
-                    <a href="#" onclick="viewPost(${post.id})">${escapeHtml(post.title)}</a>
+                    <a href="#" onclick="viewPost(${post.id}); return false;">${escapeHtml(post.title)}</a>
                 </h3>
                 <p class="post-excerpt">${escapeHtml(excerpt)}</p>
                 ${post.categories ? `
                     <div class="post-tags">
-                        ${post.categories.map(cat => `<a href="#" class="tag" onclick="filterByCategory('${cat.name}')">${escapeHtml(cat.name)}</a>`).join('')}
+                        ${post.categories.map(cat => `<a href="#" class="tag" onclick="filterByCategory('${cat.name}'); return false;">${escapeHtml(cat.name)}</a>`).join('')}
                     </div>
                 ` : ''}
                 <div class="post-stats">
                     <span><i class="fas fa-comments"></i> ${post.comment_count || 0} comments</span>
-                    <a href="#" class="post-read-more" onclick="viewPost(${post.id})">Read More <i class="fas fa-arrow-right"></i></a>
+                    <a href="#" class="post-read-more" onclick="viewPost(${post.id}); return false;">Read More <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </article>
@@ -267,16 +320,13 @@ function renderFeaturedPosts(posts) {
 }
 
 function createFeaturedPostCard(post) {
-  const imageUrl = post.featured_image_url || 'https://via.placeholder.com/400x250?text=Featured+Post';
   const excerpt = post.excerpt || stripHtml(post.content).substring(0, 120) + '...';
 
   return `
         <div class="featured-post-card">
-            <img src="${imageUrl}" alt="${escapeHtml(post.title)}" class="featured-image" 
-                 onerror="this.src='https://via.placeholder.com/400x250?text=Featured+Post'">
             <div class="featured-content">
                 <span class="featured-badge">Featured</span>
-                <h3><a href="#" onclick="viewPost(${post.id})">${escapeHtml(post.title)}</a></h3>
+                <h3><a href="#" onclick="viewPost(${post.id}); return false;">${escapeHtml(post.title)}</a></h3>
                 <p>${escapeHtml(excerpt)}</p>
                 <div class="featured-meta">
                     <span>${escapeHtml(post.author_name || 'Anonymous')}</span>
@@ -287,23 +337,9 @@ function createFeaturedPostCard(post) {
     `;
 }
 
-function renderCategories(categories) {
-  categoriesList.innerHTML = categories.map(category => `
-        <a href="#" class="category-item" onclick="filterByCategory('${category.name}')">
-            <span>${escapeHtml(category.name)}</span>
-            <span class="category-count">${category.post_count || 0}</span>
-        </a>
-    `).join('');
-}
-
-function populateCategoryFilter(categories) {
-  categoryFilter.innerHTML = '<option value="">All Categories</option>' +
-    categories.map(cat => `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`).join('');
-}
-
 function renderTags(tags) {
   tagsCloud.innerHTML = tags.map(tag => `
-        <a href="#" class="tag" onclick="filterByTag('${tag}')">${escapeHtml(tag)}</a>
+        <a href="#" class="tag" onclick="filterByTag('${tag}'); return false;">${escapeHtml(tag)}</a>
     `).join('');
 }
 
@@ -318,7 +354,7 @@ function renderRecentComments(comments) {
             <div class="comment-author">${escapeHtml(comment.author)}</div>
             <div class="comment-text">${escapeHtml(comment.text)}</div>
             <div class="comment-post">
-                on <a href="#" onclick="viewPost(${comment.post_id})">${escapeHtml(comment.post_title)}</a>
+                on <a href="#" onclick="viewPost(${comment.post_id}); return false;">${escapeHtml(comment.post_title)}</a>
             </div>
         </div>
     `).join('');
@@ -406,18 +442,6 @@ function setupEventListeners() {
     logout();
   });
 
-  // Search
-  searchBtn?.addEventListener('click', performSearch);
-  searchInput?.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      performSearch();
-    }
-  });
-
-  // Filters
-  categoryFilter?.addEventListener('change', applyFilters);
-  sortFilter?.addEventListener('change', applyFilters);
-
   // View toggle
   viewBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -431,37 +455,12 @@ function setupEventListeners() {
 }
 
 // Action Functions
-function performSearch() {
-  const searchTerm = searchInput.value.trim();
-  applyFilters({ search: searchTerm });
-}
-
-function applyFilters(additionalFilters = {}) {
-  const filters = {
-    category: categoryFilter?.value || '',
-    sort: sortFilter?.value || 'created_at',
-    ...additionalFilters
-  };
-
-  // Remove empty filters
-  Object.keys(filters).forEach(key => {
-    if (!filters[key]) {
-      delete filters[key];
-    }
-  });
-
-  loadPosts(1, filters);
-}
-
 function filterByCategory(categoryName) {
-  if (categoryFilter) {
-    categoryFilter.value = categoryName;
-  }
-  applyFilters({ category: categoryName });
+  loadPosts(1, { category: categoryName });
 }
 
 function filterByTag(tagName) {
-  applyFilters({ tag: tagName });
+  loadPosts(1, { tag: tagName });
 }
 
 function changePage(page) {
@@ -483,9 +482,15 @@ function changeView(view) {
 }
 
 function viewPost(postId) {
-  // This would typically navigate to a post detail page
-  console.log('Viewing post:', postId);
-  showNotification('Post detail page not implemented yet', 'info');
+  // Validate postId
+  if (!postId || postId <= 0) {
+    showNotification('Invalid post ID', 'error');
+    return false;
+  }
+
+  // Navigate to post detail page
+  window.location.href = `../post-detail/post-detail.html?id=${postId}`;
+  return false;
 }
 
 async function handleNewsletterSubscription(e) {

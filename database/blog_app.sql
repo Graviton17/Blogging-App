@@ -7,6 +7,7 @@
 
 -- Drop existing tables in reverse dependency order (for clean reinstall)
 DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS remember_tokens;
 DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS post_tags;
@@ -40,7 +41,6 @@ CREATE TABLE profiles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT UNIQUE NOT NULL,
     bio TEXT,
-    avatar_url VARCHAR(255),
     website_url VARCHAR(255),
     social_links JSON,
     location VARCHAR(100),
@@ -71,7 +71,6 @@ CREATE TABLE posts (
     slug VARCHAR(255) UNIQUE NOT NULL,
     content LONGTEXT NOT NULL,
     excerpt TEXT,
-    featured_image VARCHAR(255),
     author_id INT NOT NULL,
     status ENUM('draft', 'published', 'archived') DEFAULT 'draft',
     visibility ENUM('public', 'private', 'password_protected') DEFAULT 'public',
@@ -79,6 +78,7 @@ CREATE TABLE posts (
     view_count INT DEFAULT 0,
     like_count INT DEFAULT 0,
     comment_count INT DEFAULT 0,
+    allow_comments TINYINT(1) DEFAULT 1,
     published_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -158,6 +158,17 @@ CREATE TABLE sessions (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- 11. Remember Tokens table for "Remember Me" functionality
+CREATE TABLE remember_tokens (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- Create all indexes
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_username ON users(username);
@@ -181,5 +192,9 @@ CREATE INDEX idx_comments_parent_id ON comments(parent_id);
 
 CREATE INDEX idx_sessions_user_id ON sessions(user_id);
 CREATE INDEX idx_sessions_last_activity ON sessions(last_activity);
+
+CREATE INDEX idx_remember_tokens_user_id ON remember_tokens(user_id);
+CREATE INDEX idx_remember_tokens_token ON remember_tokens(token);
+CREATE INDEX idx_remember_tokens_expires_at ON remember_tokens(expires_at);
 
 -- Database schema created successfully

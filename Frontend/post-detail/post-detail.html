@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">BlogSpace - Post Detail</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <meta
+      name="description"
+      content="Read amazing blog posts on BlogSpace"
+      id="metaDescription"
+    />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <a href="../home/home.html" class="logo">
+            <i class="fas fa-blog"></i>
+            BlogSpace
+          </a>
+        </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="../home/home.html" class="nav-link">Home</a>
+          <a href="../about/about.html" class="nav-link">About</a>
+          <a href="../contact/contact.html" class="nav-link">Contact</a>
+          <div class="nav-auth" id="navAuth">
+            <a href="../login/login.html" class="btn btn-outline">Login</a>
+            <a href="../sign-up/sign-up.html" class="btn btn-primary"
+              >Sign Up</a
+            >
+          </div>
+          <div class="nav-user hidden" id="navUser">
+            <div class="user-dropdown">
+              <button class="user-btn" id="userBtn">
+                <span class="user-name" id="userName">User</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <a href="../create-post/create-post.html" class="dropdown-item">
+                  <i class="fas fa-plus"></i>
+                  Create Post
+                </a>
+                <a href="../profile/profile.html" class="dropdown-item">
+                  <i class="fas fa-user"></i>
+                  Profile
+                </a>
+                <a href="../settings/settings.html" class="dropdown-item">
+                  <i class="fas fa-cog"></i>
+                  Settings
+                </a>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" id="logoutBtn">
+                  <i class="fas fa-sign-out-alt"></i>
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Toggle navigation menu"
+          title="Toggle navigation menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Loading Spinner -->
+    <div class="loading-container" id="loadingContainer">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading post...</span>
+      </div>
+    </div>
+
+    <!-- Error Container -->
+    <div class="error-container hidden" id="errorContainer">
+      <div class="container">
+        <div class="error-content">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h2>Post Not Found</h2>
+          <p id="errorMessage">
+            The post you're looking for doesn't exist or has been removed.
+          </p>
+          <a href="../home/home.html" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i>
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content hidden" id="mainContent">
+      <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+          <a href="../home/home.html">
+            <i class="fas fa-home"></i>
+            Home
+          </a>
+          <span class="breadcrumb-separator">/</span>
+          <span id="breadcrumbCategory">Category</span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-current" id="breadcrumbTitle"
+            >Post Title</span
+          >
+        </nav>
+
+        <article class="post-detail">
+          <!-- Post Header -->
+          <header class="post-header">
+            <div class="post-categories" id="postCategories">
+              <!-- Categories will be loaded here -->
+            </div>
+            <h1 class="post-title" id="postTitle">Post Title</h1>
+            <div class="post-meta">
+              <div class="author-info">
+                <div class="author-details">
+                  <span class="author-name" id="authorName">Author Name</span>
+                  <div class="post-stats">
+                    <time class="post-date" id="postDate">Date</time>
+                    <span class="stats-separator">•</span>
+                    <span class="read-time" id="readTime">5 min read</span>
+                    <span class="stats-separator">•</span>
+                    <span class="view-count">
+                      <i class="fas fa-eye"></i>
+                      <span id="viewCount">0</span> views
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="post-actions">
+                <button class="action-btn" id="likeBtn" title="Like this post">
+                  <i class="far fa-heart"></i>
+                  <span id="likeCount">0</span>
+                </button>
+                <button
+                  class="action-btn"
+                  id="shareBtn"
+                  title="Share this post"
+                >
+                  <i class="fas fa-share"></i>
+                  Share
+                </button>
+                <div class="post-controls" id="postControls">
+                  <button class="action-btn" id="editBtn" title="Edit post">
+                    <i class="fas fa-edit"></i>
+                    Edit
+                  </button>
+                  <button
+                    class="action-btn danger"
+                    id="deleteBtn"
+                    title="Delete post"
+                  >
+                    <i class="fas fa-trash"></i>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <!-- Post Content -->
+          <div class="post-content">
+            <div class="post-excerpt" id="postExcerpt">
+              <!-- Excerpt will be loaded here -->
+            </div>
+            <div class="post-body" id="postBody">
+              <!-- Post content will be loaded here -->
+            </div>
+          </div>
+
+          <!-- Post Tags -->
+          <div class="post-tags" id="postTags">
+            <!-- Tags will be loaded here -->
+          </div>
+
+          <!-- Share Section -->
+          <div class="share-section">
+            <h3>Share this post</h3>
+            <div class="share-buttons">
+              <button class="share-btn facebook" id="shareFacebook">
+                <i class="fab fa-facebook-f"></i>
+                Facebook
+              </button>
+              <button class="share-btn twitter" id="shareTwitter">
+                <i class="fab fa-twitter"></i>
+                Twitter
+              </button>
+              <button class="share-btn linkedin" id="shareLinkedin">
+                <i class="fab fa-linkedin-in"></i>
+                LinkedIn
+              </button>
+              <button class="share-btn copy" id="copyLink">
+                <i class="fas fa-link"></i>
+                Copy Link
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Comments Section -->
+        <section class="comments-section" id="commentsSection">
+          <h3 class="comments-title">
+            Comments (<span id="commentsCount">0</span>)
+          </h3>
+
+          <!-- Comment Form -->
+          <div class="comment-form-container" id="commentFormContainer">
+            <form class="comment-form" id="commentForm">
+              <div class="form-group">
+                <textarea
+                  id="commentText"
+                  placeholder="Write your comment..."
+                  rows="4"
+                  maxlength="1000"
+                  required
+                ></textarea>
+                <div class="char-count">
+                  <span id="commentCharCount">0</span>/1000
+                </div>
+              </div>
+              <div class="form-actions">
+                <button
+                  type="button"
+                  class="btn btn-outline"
+                  id="cancelComment"
+                >
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-paper-plane"></i>
+                  Post Comment
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Login Prompt for Comments -->
+          <div class="login-prompt hidden" id="loginPrompt">
+            <p>
+              Please <a href="../login/login.html">log in</a> to leave a
+              comment.
+            </p>
+          </div>
+
+          <!-- Comments List -->
+          <div class="comments-list" id="commentsList">
+            <!-- Comments will be loaded here -->
+          </div>
+
+          <!-- Load More Comments -->
+          <div class="load-more-container" id="loadMoreContainer">
+            <button class="btn btn-outline" id="loadMoreComments">
+              Load More Comments
+            </button>
+          </div>
+        </section>
+
+        <!-- Related Posts -->
+        <section class="related-posts" id="relatedPosts">
+          <h3>Related Posts</h3>
+          <div class="related-posts-grid" id="relatedPostsGrid">
+            <!-- Related posts will be loaded here -->
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Alert Container -->
+    <div class="alert-container" id="alertContainer"></div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Share Post</h3>
+          <button
+            class="modal-close"
+            id="closeShareModal"
+            aria-label="Close share modal"
+            title="Close"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="share-options">
+            <a href="#" class="share-option" id="shareWhatsApp">
+              <i class="fab fa-whatsapp"></i>
+              WhatsApp
+            </a>
+            <a href="#" class="share-option" id="shareEmail">
+              <i class="fas fa-envelope"></i>
+              Email
+            </a>
+            <a href="#" class="share-option" id="shareTelegram">
+              <i class="fab fa-telegram-plane"></i>
+              Telegram
+            </a>
+          </div>
+          <div class="copy-link-section">
+            <label for="shareUrlInput" class="visually-hidden">Share URL</label>
+            <input
+              type="text"
+              id="shareUrlInput"
+              aria-label="Share URL"
+              readonly
+            />
+            <button class="btn btn-primary" id="copyShareUrl">
+              <i class="fas fa-copy"></i>
+              Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../assets/js/api-config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -2,17 +2,25 @@
 class LoginManager {
   constructor() {
     this.form = document.getElementById('loginForm');
-    this.emailInput = document.getElementById('email');
+    this.emailInput = document.getElementById('login'); // Changed from 'email' to 'login' to match HTML
     this.passwordInput = document.getElementById('password');
     this.rememberCheckbox = document.getElementById('remember');
-    this.submitButton = document.getElementById('submitBtn');
+    this.submitButton = document.getElementById('loginButton'); // Changed from 'submitBtn' to 'loginButton' to match HTML
     this.alertContainer = document.getElementById('alertContainer');
 
     this.forgotPasswordModal = document.getElementById('forgotPasswordModal');
     this.resetForm = document.getElementById('resetForm');
     this.resetEmailInput = document.getElementById('resetEmail');
 
-    this.apiBaseUrl = '/Blogging-App/Backend/api';
+    // Use API configuration if available, otherwise use XAMPP default
+    this.apiEndpoints = typeof API_ENDPOINTS !== 'undefined'
+      ? API_ENDPOINTS.AUTH
+      : {
+        CSRF_TOKEN: 'http://localhost/blogging-app/Backend/api/auth/csrf-token.php',
+        LOGIN: 'http://localhost/blogging-app/Backend/api/auth/login.php',
+        STATUS: 'http://localhost/blogging-app/Backend/api/auth/status.php',
+        FORGOT_PASSWORD: 'http://localhost/blogging-app/Backend/api/auth/forgot-password.php',
+      };
     this.csrfToken = '';
 
     this.init();
@@ -27,11 +35,12 @@ class LoginManager {
 
   async fetchCSRFToken() {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/auth/csrf-token.php`);
+      const url = this.apiEndpoints.CSRF_TOKEN;
+      const response = await fetch(url);
       const data = await response.json();
 
-      if (data.success && data.token) {
-        this.csrfToken = data.token;
+      if (data.success && (data.token || data.csrf_token)) {
+        this.csrfToken = data.token || data.csrf_token;
       }
     } catch (error) {
       console.error('Failed to fetch CSRF token:', error);
@@ -56,7 +65,7 @@ class LoginManager {
     if (githubBtn) githubBtn.addEventListener('click', () => this.handleSocialLogin('github'));
 
     // Forgot password modal
-    const forgotPasswordLink = document.getElementById('forgotPassword');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink'); // Changed from 'forgotPassword' to match HTML
     if (forgotPasswordLink) {
       forgotPasswordLink.addEventListener('click', (e) => {
         e.preventDefault();
@@ -81,7 +90,7 @@ class LoginManager {
     this.passwordInput.addEventListener('blur', () => this.validatePassword());
 
     // Clear errors on input
-    this.emailInput.addEventListener('input', () => this.clearFieldError('email'));
+    this.emailInput.addEventListener('input', () => this.clearFieldError('login')); // Changed from 'email' to 'login'
     this.passwordInput.addEventListener('input', () => this.clearFieldError('password'));
 
     // Remember me functionality
@@ -95,15 +104,15 @@ class LoginManager {
     // Add custom validation messages
     this.emailInput.addEventListener('invalid', (e) => {
       if (e.target.validity.valueMissing) {
-        e.target.setCustomValidity('Please enter your email address');
+        e.target.setCustomValidity('Please enter your username or email address to continue');
       } else if (e.target.validity.typeMismatch) {
-        e.target.setCustomValidity('Please enter a valid email address');
+        e.target.setCustomValidity('Please enter a valid email address (e.g., user@example.com)');
       }
     });
 
     this.passwordInput.addEventListener('invalid', (e) => {
       if (e.target.validity.valueMissing) {
-        e.target.setCustomValidity('Please enter your password');
+        e.target.setCustomValidity('Please enter your password to log in');
       }
     });
 
@@ -115,7 +124,7 @@ class LoginManager {
 
   async checkExistingLogin() {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/auth/status.php`, {
+      const response = await fetch(this.apiEndpoints.STATUS, {
         credentials: 'include'
       });
 
@@ -125,7 +134,7 @@ class LoginManager {
         // User is already logged in, redirect to dashboard or home
         this.showAlert('You are already logged in. Redirecting...', 'info');
         setTimeout(() => {
-          window.location.href = '/Blogging-App/Frontend/home/home.html';
+          window.location.href = '../home/home.html';
         }, 1500);
       }
     } catch (error) {
@@ -145,20 +154,36 @@ class LoginManager {
     this.clearAlert();
 
     try {
-      const formData = new FormData();
-      formData.append('email', this.emailInput.value.trim());
-      formData.append('password', this.passwordInput.value);
-      formData.append('remember', this.rememberCheckbox.checked ? '1' : '0');
+      // Prepare login data as JSON
+      const loginData = {
+        login: this.emailInput.value.trim(),
+        password: this.passwordInput.value,
+        remember: this.rememberCheckbox.checked,
+        csrf_token: this.csrfToken
+      };
 
-      if (this.csrfToken) {
-        formData.append('csrf_token', this.csrfToken);
-      }
+      const url = this.apiEndpoints.LOGIN;
 
-      const response = await fetch(`${this.apiBaseUrl}/auth/login.php`, {
+      // Create timeout for the request
+      const timeoutId = setTimeout(() => {
+        throw new Error('Login request timed out');
+      }, 15000); // 15 second timeout for login
+
+      const response = await fetch(url, {
         method: 'POST',
-        body: formData,
-        credentials: 'include'
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(loginData),
+        signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined
       });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Login request failed`);
+      }
 
       const data = await response.json();
 
@@ -175,12 +200,12 @@ class LoginManager {
         // Redirect after short delay
         setTimeout(() => {
           const redirectUrl = new URLSearchParams(window.location.search).get('redirect') ||
-            '/Blogging-App/Frontend/home/home.html';
+            '../home/home.html';
           window.location.href = redirectUrl;
         }, 1500);
 
       } else {
-        this.showAlert(data.message || 'Login failed. Please try again.', 'error');
+        this.showAlert(data.error || data.message || 'Login failed. Please try again.', 'error');
 
         // Handle specific field errors
         if (data.errors) {
@@ -192,7 +217,21 @@ class LoginManager {
 
     } catch (error) {
       console.error('Login error:', error);
-      this.showAlert('An error occurred. Please try again.', 'error');
+
+      // Provide specific error messages based on error type
+      if (error.message.includes('timeout')) {
+        this.showAlert('Login request timed out. Please check your connection and try again.', 'error');
+      } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        this.showAlert('Network error. Please check your internet connection and try again.', 'error');
+      } else if (error.message.includes('HTTP 500')) {
+        this.showAlert('Server error. Please try again later or contact support.', 'error');
+      } else if (error.message.includes('HTTP 429')) {
+        this.showAlert('Too many login attempts. Please wait a few minutes and try again.', 'error');
+      } else if (error.message.includes('HTTP')) {
+        this.showAlert('Login service is currently unavailable. Please try again later.', 'error');
+      } else {
+        this.showAlert('An unexpected error occurred. Please try again.', 'error');
+      }
     } finally {
       this.setLoading(false);
     }
@@ -222,16 +261,17 @@ class LoginManager {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email) {
-      this.showFieldError('email', 'Email is required');
+      this.showFieldError('login', 'Please enter your username or email address to continue');
       return false;
     }
 
-    if (!emailRegex.test(email)) {
-      this.showFieldError('email', 'Please enter a valid email address');
-      return false;
-    }
+    // Allow both username and email format
+    // if (!emailRegex.test(email)) {
+    //   this.showFieldError('login', 'Please enter a valid email address');
+    //   return false;
+    // }
 
-    this.clearFieldError('email');
+    this.clearFieldError('login'); // Changed from 'email' to 'login'
     return true;
   }
 
@@ -239,12 +279,12 @@ class LoginManager {
     const password = this.passwordInput.value;
 
     if (!password) {
-      this.showFieldError('password', 'Password is required');
+      this.showFieldError('password', 'Please enter your password to log in');
       return false;
     }
 
     if (password.length < 6) {
-      this.showFieldError('password', 'Password must be at least 6 characters');
+      this.showFieldError('password', 'Password must be at least 6 characters long');
       return false;
     }
 
@@ -385,7 +425,7 @@ class LoginManager {
         formData.append('csrf_token', this.csrfToken);
       }
 
-      const response = await fetch(`${this.apiBaseUrl}/auth/forgot-password.php`, {
+      const response = await fetch(this.apiEndpoints.FORGOT_PASSWORD, {
         method: 'POST',
         body: formData
       });

@@ -1,19 +1,15 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET');
-header('Access-Control-Allow-Headers: Content-Type');
+// Include bootstrap for configuration and security
+require_once '../../includes/bootstrap.php';
+require_once '../../models/Post.php';
+require_once '../../models/Database.php';
+require_once '../../utils/Security.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
     exit;
 }
-
-require_once '../../models/Post.php';
-require_once '../../utils/Security.php';
-require_once '../../../config/app.php';
 
 try {
     // Get post ID from URL parameter
@@ -31,7 +27,11 @@ try {
     
     if (!$postData) {
         http_response_code(404);
-        echo json_encode(['error' => 'Post not found']);
+        echo json_encode([
+            'error' => 'Post not found',
+            'message' => "No post found with ID: {$postId}",
+            'requested_id' => $postId
+        ]);
         exit;
     }
     
@@ -72,6 +72,22 @@ try {
             $postData['view_count']++;
         }
     }
+
+    // Add like information if user is logged in
+    if (Security::isLoggedIn()) {
+        $userId = Security::getCurrentUserId();
+        
+        // Check if current user liked this post
+        $db = Database::getInstance();
+        $likeCheckSql = "SELECT id FROM likes WHERE user_id = ? AND post_id = ?";
+        $likeCheck = $db->fetch($likeCheckSql, [$userId, $postId]);
+        $postData['is_liked'] = (bool)$likeCheck;
+    } else {
+        $postData['is_liked'] = false;
+    }
+
+    // Format author information
+    $postData['author_name'] = trim(($postData['first_name'] ?? '') . ' ' . ($postData['last_name'] ?? '')) ?: $postData['username'];
     
     echo json_encode([
         'success' => true,
@@ -80,6 +96,11 @@ try {
     
 } catch (Exception $e) {
     http_response_code(400);
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode([
+        'error' => $e->getMessage(),
+        'message' => 'Failed to retrieve post: ' . $e->getMessage(),
+        'file' => basename($e->getFile()),
+        'line' => $e->getLine()
+    ]);
 }
 ?>

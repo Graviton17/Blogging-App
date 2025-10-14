@@ -73,7 +73,7 @@ class User
      */
     public function findById($id)
     {
-        $sql = "SELECT u.*, p.bio, p.avatar_url, p.website_url, p.location 
+        $sql = "SELECT u.*, p.bio, p.website_url, p.location 
                 FROM users u 
                 LEFT JOIN profiles p ON u.id = p.user_id 
                 WHERE u.id = ? AND u.is_active = 1";
@@ -100,11 +100,25 @@ class User
     }
 
     /**
+     * Check if username exists
+     */
+    public function usernameExists($username)
+    {
+        $sql = "SELECT id FROM users WHERE username = ?";
+        $result = $this->db->fetch($sql, [$username]);
+        return $result !== false;
+    }
+
+    /**
      * Verify user login credentials
      */
-    public function verifyLogin($email, $password)
+    public function verifyLogin($login, $password)
     {
-        $user = $this->findByEmail($email);
+        // Try to find user by email first, then by username
+        $user = $this->findByEmail($login);
+        if (!$user) {
+            $user = $this->findByUsername($login);
+        }
         
         if ($user && password_verify($password, $user['password_hash'])) {
             if (!$user['email_verified']) {
@@ -219,7 +233,7 @@ class User
      */
     public function updateProfile($userId, $profileData)
     {
-        $allowedFields = ['bio', 'avatar_url', 'website_url', 'location', 'date_of_birth'];
+        $allowedFields = ['bio', 'website_url', 'location', 'date_of_birth'];
         $updateFields = [];
         $params = [];
 
@@ -273,7 +287,7 @@ class User
     {
         $sql = "SELECT rt.*, u.* FROM remember_tokens rt 
                 JOIN users u ON rt.user_id = u.id 
-                WHERE rt.expires_at > NOW() AND u.status = 'active'";
+                WHERE rt.expires_at > NOW() AND u.is_active = 1";
         
         $tokens = $this->db->fetchAll($sql);
         
@@ -284,6 +298,15 @@ class User
         }
         
         return false;
+    }
+
+    /**
+     * Clear remember token for user
+     */
+    public function clearRememberToken($userId)
+    {
+        $sql = "DELETE FROM remember_tokens WHERE user_id = ?";
+        return $this->db->execute($sql, [$userId]);
     }
 
     /**
@@ -309,7 +332,7 @@ class User
      */
     public function updateLastLogin($userId)
     {
-        $sql = "UPDATE users SET last_login_at = NOW() WHERE id = ?";
+        $sql = "UPDATE users SET updated_at = NOW() WHERE id = ?";
         return $this->db->execute($sql, [$userId]);
     }
 }

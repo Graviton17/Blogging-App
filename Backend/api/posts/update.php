@@ -1,19 +1,14 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: PUT');
-header('Access-Control-Allow-Headers: Content-Type');
+// Include bootstrap for configuration and security
+require_once '../../includes/bootstrap.php';
+require_once '../../models/Post.php';
+require_once '../../utils/Security.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
     exit;
 }
-
-require_once '../../models/Post.php';
-require_once '../../utils/Security.php';
-require_once '../../../config/app.php';
 
 try {
     // Check if user is logged in
@@ -72,7 +67,7 @@ try {
     // Prepare update data
     $updateData = [];
     $allowedFields = [
-        'title', 'content', 'excerpt', 'status', 'featured_image_url',
+        'title', 'content', 'excerpt', 'status',
         'meta_title', 'meta_description', 'allow_comments', 'scheduled_at'
     ];
     

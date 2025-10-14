@@ -25,7 +25,10 @@ try {
     
     // Rate limiting
     $clientId = $_SERVER['REMOTE_ADDR'];
-    if (!Security::checkRateLimit("login_$clientId", 5, 300)) {
+    $maxAttempts = (APP_ENV === 'development') ? 20 : 5;  // More lenient in development
+    $timeWindow = (APP_ENV === 'development') ? 60 : 300; // Shorter window in development
+    
+    if (!Security::checkRateLimit("login_$clientId", $maxAttempts, $timeWindow)) {
         http_response_code(429);
         echo json_encode(['error' => 'Too many login attempts. Please try again later.']);
         exit;
@@ -60,12 +63,12 @@ try {
     }
     
     // Check if account is verified
-    if (!$userData['is_verified']) {
+    if (!$userData['email_verified']) {
         throw new Exception('Please verify your email address before logging in');
     }
     
     // Check if account is active
-    if ($userData['status'] !== 'active') {
+    if (!$userData['is_active']) {
         throw new Exception('Account is not active. Please contact support.');
     }
     

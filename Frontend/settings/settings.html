@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - BlogSpace</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <meta
+      name="description"
+      content="Manage your BlogSpace account settings and preferences"
+    />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <a href="../home/home.html" class="logo">
+            <i class="fas fa-blog"></i>
+            BlogSpace
+          </a>
+        </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="../home/home.html" class="nav-link">Home</a>
+          <a href="../about/about.html" class="nav-link">About</a>
+          <a href="../contact/contact.html" class="nav-link">Contact</a>
+          <div class="nav-user" id="navUser">
+            <div class="user-dropdown">
+              <button class="user-btn" id="userBtn">
+                <span class="user-name" id="userName">User</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <a href="../profile/profile.html" class="dropdown-item"
+                  ><i class="fas fa-user"></i> Profile</a
+                >
+                <a href="../create-post/create-post.html" class="dropdown-item"
+                  ><i class="fas fa-edit"></i> Write Post</a
+                >
+                <a href="settings.html" class="dropdown-item"
+                  ><i class="fas fa-cog"></i> Settings</a
+                >
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" id="logoutBtn"
+                  ><i class="fas fa-sign-out-alt"></i> Logout</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Toggle navigation menu"
+          title="Toggle navigation menu"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Loading State -->
+    <div class="loading-container" id="loadingContainer">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading settings...</span>
+      </div>
+    </div>
+
+    <!-- Not Logged In State -->
+    <div class="not-logged-in hidden" id="notLoggedIn">
+      <div class="container">
+        <div class="empty-state">
+          <i class="fas fa-user-lock"></i>
+          <h2>Please Log In</h2>
+          <p>You need to be logged in to access settings</p>
+          <a href="../login/login.html" class="btn btn-primary btn-lg">
+            <i class="fas fa-sign-in-alt"></i>
+            Log In
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content hidden" id="mainContent">
+      <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="header-content">
+            <h1>Settings</h1>
+            <p>Manage your account settings and preferences</p>
+          </div>
+        </div>
+
+        <!-- Settings Sections -->
+        <div class="settings-container">
+          <!-- Account Settings -->
+          <section class="settings-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <div class="section-info">
+                <h2>Account Settings</h2>
+                <p>Update your account information and preferences</p>
+              </div>
+            </div>
+
+            <div class="section-content">
+              <!-- Alert Container -->
+              <div id="accountAlertContainer" class="alert-container"></div>
+
+              <form id="accountForm" class="settings-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input
+                      type="text"
+                      id="firstName"
+                      class="form-input"
+                      placeholder="Enter your first name"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input
+                      type="text"
+                      id="lastName"
+                      class="form-input"
+                      placeholder="Enter your last name"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="username" class="form-label">Username</label>
+                  <input
+                    type="text"
+                    id="username"
+                    class="form-input"
+                    placeholder="Username"
+                    disabled
+                  />
+                  <small class="form-hint">Username cannot be changed</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="email" class="form-label">Email Address</label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-input"
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="bio" class="form-label">Bio</label>
+                  <textarea
+                    id="bio"
+                    class="form-textarea"
+                    placeholder="Tell us about yourself..."
+                    rows="4"
+                    maxlength="500"
+                  ></textarea>
+                  <div class="char-count">
+                    <span id="bioCharCount">0</span>/500
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span class="btn-text">Save Changes</span>
+                    <span class="btn-loading hidden">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      Saving...
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- Password Settings -->
+          <section class="settings-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <i class="fas fa-lock"></i>
+              </div>
+              <div class="section-info">
+                <h2>Change Password</h2>
+                <p>Update your password to keep your account secure</p>
+              </div>
+            </div>
+
+            <div class="section-content">
+              <!-- Alert Container -->
+              <div id="passwordAlertContainer" class="alert-container"></div>
+
+              <form id="passwordForm" class="settings-form">
+                <div class="form-group">
+                  <label for="currentPassword" class="form-label"
+                    >Current Password</label
+                  >
+                  <div class="password-input-wrapper">
+                    <input
+                      type="password"
+                      id="currentPassword"
+                      class="form-input"
+                      placeholder="Enter current password"
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('currentPassword')"
+                      aria-label="Toggle current password visibility"
+                      title="Toggle password visibility"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="newPassword" class="form-label"
+                    >New Password</label
+                  >
+                  <div class="password-input-wrapper">
+                    <input
+                      type="password"
+                      id="newPassword"
+                      class="form-input"
+                      placeholder="Enter new password"
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('newPassword')"
+                      aria-label="Toggle new password visibility"
+                      title="Toggle password visibility"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                  <small class="form-hint"
+                    >Password must be at least 8 characters long</small
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="confirmPassword" class="form-label"
+                    >Confirm New Password</label
+                  >
+                  <div class="password-input-wrapper">
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      class="form-input"
+                      placeholder="Confirm new password"
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      onclick="togglePassword('confirmPassword')"
+                      aria-label="Toggle confirm password visibility"
+                      title="Toggle password visibility"
+                    >
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-key"></i>
+                    <span class="btn-text">Update Password</span>
+                    <span class="btn-loading hidden">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      Updating...
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- Notification Settings -->
+          <section class="settings-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <i class="fas fa-bell"></i>
+              </div>
+              <div class="section-info">
+                <h2>Notification Preferences</h2>
+                <p>Choose how you want to be notified</p>
+              </div>
+            </div>
+
+            <div class="section-content">
+              <!-- Alert Container -->
+              <div
+                id="notificationAlertContainer"
+                class="alert-container"
+              ></div>
+
+              <form id="notificationForm" class="settings-form">
+                <div class="preference-item">
+                  <div class="preference-info">
+                    <h4>Email Notifications</h4>
+                    <p>Receive email updates about your posts and comments</p>
+                  </div>
+                  <label class="toggle-switch" for="emailNotifications">
+                    <input
+                      type="checkbox"
+                      id="emailNotifications"
+                      aria-label="Email Notifications"
+                      checked
+                    />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="preference-item">
+                  <div class="preference-info">
+                    <h4>Comment Notifications</h4>
+                    <p>Get notified when someone comments on your posts</p>
+                  </div>
+                  <label class="toggle-switch" for="commentNotifications">
+                    <input
+                      type="checkbox"
+                      id="commentNotifications"
+                      aria-label="Comment Notifications"
+                      checked
+                    />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="preference-item">
+                  <div class="preference-info">
+                    <h4>Like Notifications</h4>
+                    <p>Get notified when someone likes your posts</p>
+                  </div>
+                  <label class="toggle-switch" for="likeNotifications">
+                    <input
+                      type="checkbox"
+                      id="likeNotifications"
+                      aria-label="Like Notifications"
+                      checked
+                    />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="preference-item">
+                  <div class="preference-info">
+                    <h4>Marketing Emails</h4>
+                    <p>Receive news and updates about BlogSpace</p>
+                  </div>
+                  <label class="toggle-switch" for="marketingEmails">
+                    <input
+                      type="checkbox"
+                      id="marketingEmails"
+                      aria-label="Marketing Emails"
+                    />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span class="btn-text">Save Preferences</span>
+                    <span class="btn-loading hidden">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      Saving...
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- Privacy Settings -->
+          <section class="settings-section">
+            <div class="section-header">
+              <div class="section-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div class="section-info">
+                <h2>Privacy Settings</h2>
+                <p>Control your privacy and data preferences</p>
+              </div>
+            </div>
+
+            <div class="section-content">
+              <!-- Alert Container -->
+              <div id="privacyAlertContainer" class="alert-container"></div>
+
+              <form id="privacyForm" class="settings-form">
+                <div class="preference-item">
+                  <div class="preference-info">
+                    <h4>Profile Visibility</h4>
+                    <p>Make your profile visible to other users</p>
+                  </div>
+                  <label class="toggle-switch" for="profileVisibility">
+                    <input
+                      type="checkbox"
+                      id="profileVisibility"
+                      aria-label="Profile Visibility"
+                      checked
+                    />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="preference-item">
+                  <div class="preference-info">
+                    <h4>Show Email</h4>
+                    <p>Display your email address on your public profile</p>
+                  </div>
+                  <label class="toggle-switch" for="showEmail">
+                    <input
+                      type="checkbox"
+                      id="showEmail"
+                      aria-label="Show Email"
+                    />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="preference-item">
+                  <div class="preference-info">
+                    <h4>Allow Comments</h4>
+                    <p>Allow others to comment on your posts</p>
+                  </div>
+                  <label class="toggle-switch" for="allowComments">
+                    <input
+                      type="checkbox"
+                      id="allowComments"
+                      aria-label="Allow Comments"
+                      checked
+                    />
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    <span class="btn-text">Save Privacy Settings</span>
+                    <span class="btn-loading hidden">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      Saving...
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- Danger Zone -->
+          <section class="settings-section danger-section">
+            <div class="section-header">
+              <div class="section-icon danger">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="section-info">
+                <h2>Danger Zone</h2>
+                <p>Irreversible actions that affect your account</p>
+              </div>
+            </div>
+
+            <div class="section-content">
+              <div class="danger-actions">
+                <div class="danger-item">
+                  <div class="danger-info">
+                    <h4>Delete Account</h4>
+                    <p>
+                      Permanently delete your account and all associated data.
+                      This action cannot be undone.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="deleteAccountBtn"
+                  >
+                    <i class="fas fa-trash"></i>
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal hidden" id="deleteModal">
+      <div class="modal-overlay" id="deleteModalOverlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Delete Account</h2>
+          <button
+            class="modal-close"
+            id="closeDeleteModal"
+            aria-label="Close delete account modal"
+            title="Close"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="warning-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>
+              <strong>Warning:</strong> This action is permanent and cannot be
+              undone. All your posts, comments, and data will be permanently
+              deleted.
+            </p>
+          </div>
+
+          <form id="deleteAccountForm">
+            <div class="form-group">
+              <label for="deletePassword" class="form-label"
+                >Enter your password to confirm</label
+              >
+              <input
+                type="password"
+                id="deletePassword"
+                class="form-input"
+                placeholder="Password"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="confirmDelete" required />
+                <span
+                  >I understand this action is permanent and cannot be
+                  undone</span
+                >
+              </label>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-outline" id="cancelDelete">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash"></i>
+                <span class="btn-text">Delete My Account</span>
+                <span class="btn-loading hidden">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  Deleting...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3 class="footer-title">BlogSpace</h3>
+            <p class="footer-text">
+              Empowering writers to share their stories with the world.
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h4 class="footer-subtitle">Quick Links</h4>
+            <ul class="footer-links">
+              <li><a href="../home/home.html">Home</a></li>
+              <li><a href="../about/about.html">About</a></li>
+              <li><a href="../contact/contact.html">Contact</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4 class="footer-subtitle">Community</h4>
+            <ul class="footer-links">
+              <li><a href="#">Guidelines</a></li>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Report Issue</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2025 BlogSpace. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

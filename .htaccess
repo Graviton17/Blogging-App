@@ -1,4 +1,4 @@
-# BlogSpace - Apache Configuration
+# BlogSpace - Apache Configuration for XAMPP
 
 # Security and URL rewriting rules
 
@@ -6,24 +6,26 @@
 
 RewriteEngine On
 
-# Security Headers
+# CORS Headers for API requests
 
 <IfModule mod_headers.c>
-    # Prevent MIME type sniffing
+    # CORS headers
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-CSRF-Token"
+    Header always set Access-Control-Max-Age "3600"
+    
+    # Security Headers
     Header always set X-Content-Type-Options nosniff
-    
-    # Enable XSS protection
     Header always set X-XSS-Protection "1; mode=block"
-    
-    # Clickjacking protection
     Header always set X-Frame-Options SAMEORIGIN
-    
-    # Referrer policy
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    
-    # Content Security Policy (basic - adjust as needed)
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tiny.cloud https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self';"
 </IfModule>
+
+# Handle CORS preflight requests
+
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.\*)$ $1 [R=200,L]
 
 # URL Rewriting for clean URLs
 

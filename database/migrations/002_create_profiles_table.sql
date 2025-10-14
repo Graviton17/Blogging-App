@@ -5,7 +5,6 @@ CREATE TABLE profiles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT UNIQUE NOT NULL,
     bio TEXT,
-    avatar_url VARCHAR(255),
     website_url VARCHAR(255),
     social_links JSON,
     location VARCHAR(100),

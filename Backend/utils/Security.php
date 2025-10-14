@@ -55,8 +55,10 @@ class Security
     {
         $errors = [];
         
-        if (strlen($password) < MIN_PASSWORD_LENGTH) {
-            $errors[] = "Password must be at least " . MIN_PASSWORD_LENGTH . " characters long";
+        $minLength = defined('PASSWORD_MIN_LENGTH') ? PASSWORD_MIN_LENGTH : 8;
+        
+        if (strlen($password) < $minLength) {
+            $errors[] = "Password must be at least " . $minLength . " characters long";
         }
         
         if (!preg_match('/[A-Z]/', $password)) {
@@ -183,6 +185,29 @@ class Security
     }
 
     /**
+     * Clear rate limit for a specific key
+     */
+    public static function clearRateLimit($key)
+    {
+        $rateLimitKey = "rate_limit_$key";
+        if (isset($_SESSION[$rateLimitKey])) {
+            unset($_SESSION[$rateLimitKey]);
+        }
+    }
+
+    /**
+     * Clear all rate limits
+     */
+    public static function clearAllRateLimits()
+    {
+        foreach ($_SESSION as $key => $value) {
+            if (strpos($key, 'rate_limit_') === 0) {
+                unset($_SESSION[$key]);
+            }
+        }
+    }
+
+    /**
      * Log security event
      */
     public static function logSecurityEvent($event, $details = [])
@@ -196,8 +221,12 @@ class Security
             'details' => $details
         ];
         
-        // Log to file or database
-        error_log(json_encode($logEntry), 3, LOGS_DIR . '/security.log');
+        // Log to file or database (if logs directory exists)
+        $logsDir = defined('LOGS_DIR') ? LOGS_DIR : __DIR__ . '/../../logs';
+        if (!is_dir($logsDir)) {
+            @mkdir($logsDir, 0755, true);
+        }
+        @error_log(json_encode($logEntry) . "\n", 3, $logsDir . '/security.log');
     }
 
     /**

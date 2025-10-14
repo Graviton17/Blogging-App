@@ -1,9 +1,8 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: DELETE');
-header('Access-Control-Allow-Headers: Content-Type');
+// Include bootstrap for configuration and security
+require_once '../../includes/bootstrap.php';
+require_once '../../models/Comment.php';
+require_once '../../utils/Security.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     http_response_code(405);
@@ -11,20 +10,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     exit;
 }
 
-require_once '../../models/Comment.php';
-require_once '../../utils/Security.php';
-require_once '../../../config/app.php';
-
 try {
     // Check if user is logged in
     Security::requireLogin();
     
-    // Get comment ID from URL parameter
-    if (!isset($_GET['id'])) {
+    // Get JSON input for DELETE request
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    // Also support URL parameter for backwards compatibility
+    $commentId = null;
+    if (isset($input['id'])) {
+        $commentId = (int)$input['id'];
+    } elseif (isset($_GET['id'])) {
+        $commentId = (int)$_GET['id'];
+    }
+    
+    if (!$commentId) {
         throw new Exception('Comment ID is required');
     }
     
-    $commentId = (int)$_GET['id'];
     if ($commentId <= 0) {
         throw new Exception('Invalid comment ID');
     }

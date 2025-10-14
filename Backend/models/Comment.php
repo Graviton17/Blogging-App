@@ -64,7 +64,7 @@ class Comment
         $offset = ($page - 1) * $limit;
         
         // Get top-level comments first
-        $sql = "SELECT c.*, u.username, u.first_name, u.last_name, p.avatar_url
+        $sql = "SELECT c.*, u.username, u.first_name, u.last_name
                 FROM comments c
                 LEFT JOIN users u ON c.user_id = u.id
                 LEFT JOIN profiles p ON u.id = p.user_id
@@ -74,8 +74,19 @@ class Comment
         
         $comments = $this->db->fetchAll($sql, [$postId, $limit, $offset]);
         
-        // Get replies for each comment
+        // Format comment data with proper field names
         foreach ($comments as &$comment) {
+            // Create user_name from available data (guest or registered user)
+            if ($comment['user_id']) {
+                // Registered user - combine first and last name or use username
+                $fullName = trim(($comment['first_name'] ?? '') . ' ' . ($comment['last_name'] ?? ''));
+                $comment['user_name'] = $fullName ?: ($comment['username'] ?? 'Anonymous');
+            } else {
+                // Guest comment - use author_name
+                $comment['user_name'] = $comment['author_name'] ?? 'Anonymous';
+            }
+            
+            // Get replies for each comment
             $comment['replies'] = $this->getReplies($comment['id']);
         }
         
@@ -87,14 +98,29 @@ class Comment
      */
     private function getReplies($parentId)
     {
-        $sql = "SELECT c.*, u.username, u.first_name, u.last_name, p.avatar_url
+        $sql = "SELECT c.*, u.username, u.first_name, u.last_name
                 FROM comments c
                 LEFT JOIN users u ON c.user_id = u.id
                 LEFT JOIN profiles p ON u.id = p.user_id
                 WHERE c.parent_id = ? AND c.status = 'approved'
                 ORDER BY c.created_at ASC";
         
-        return $this->db->fetchAll($sql, [$parentId]);
+        $replies = $this->db->fetchAll($sql, [$parentId]);
+        
+        // Format reply data with proper field names
+        foreach ($replies as &$reply) {
+            // Create user_name from available data (guest or registered user)
+            if ($reply['user_id']) {
+                // Registered user - combine first and last name or use username
+                $fullName = trim(($reply['first_name'] ?? '') . ' ' . ($reply['last_name'] ?? ''));
+                $reply['user_name'] = $fullName ?: ($reply['username'] ?? 'Anonymous');
+            } else {
+                // Guest comment - use author_name
+                $reply['user_name'] = $reply['author_name'] ?? 'Anonymous';
+            }
+        }
+        
+        return $replies;
     }
 
     /**

@@ -18,8 +18,6 @@ uploads/*.zip
 !uploads/media/
 
 # Configuration (security)
-config/database.php
-config/app.php
 .env
 
 # IDE

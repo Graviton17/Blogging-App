@@ -1,20 +1,15 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+// Include bootstrap for configuration and security
+require_once '../../includes/bootstrap.php';
+require_once '../../models/Comment.php';
+require_once '../../models/Post.php';
+require_once '../../utils/Security.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
     exit;
 }
-
-require_once '../../models/Comment.php';
-require_once '../../models/Post.php';
-require_once '../../utils/Security.php';
-require_once '../../../config/app.php';
 
 try {
     // Get JSON input
@@ -57,7 +52,9 @@ try {
         throw new Exception('Post not found');
     }
     
-    if (!$postData['allow_comments']) {
+    // Check if comments are allowed (default to true if field doesn't exist)
+    $allowComments = isset($postData['allow_comments']) ? (bool)$postData['allow_comments'] : true;
+    if (!$allowComments) {
         throw new Exception('Comments are disabled for this post');
     }
     

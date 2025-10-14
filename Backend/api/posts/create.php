@@ -1,9 +1,8 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+// Include bootstrap for configuration and security
+require_once '../../includes/bootstrap.php';
+require_once '../../models/Post.php';
+require_once '../../utils/Security.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -13,8 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once '../../models/Post.php';
 require_once '../../utils/Security.php';
-require_once '../../utils/FileUpload.php';
-require_once '../../../config/app.php';
 
 try {
     // Check if user is logged in
@@ -48,7 +45,6 @@ try {
         'excerpt' => isset($input['excerpt']) ? Security::sanitize($input['excerpt']) : null,
         'author_id' => Security::getCurrentUserId(),
         'status' => isset($input['status']) ? $input['status'] : 'published',
-        'featured_image_url' => isset($input['featured_image_url']) ? $input['featured_image_url'] : null,
         'meta_title' => isset($input['meta_title']) ? Security::sanitize($input['meta_title']) : null,
         'meta_description' => isset($input['meta_description']) ? Security::sanitize($input['meta_description']) : null,
         'allow_comments' => isset($input['allow_comments']) ? (bool)$input['allow_comments'] : true

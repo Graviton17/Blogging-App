@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - BlogSpace</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <meta
+      name="description"
+      content="Manage your BlogSpace profile and settings"
+    />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <div class="nav-brand">
+          <a href="../home/home.html" class="logo">
+            <i class="fas fa-blog"></i>
+            BlogSpace
+          </a>
+        </div>
+        <div class="nav-menu" id="navMenu">
+          <a href="../home/home.html" class="nav-link">Home</a>
+          <a href="../about/about.html" class="nav-link">About</a>
+          <a href="../contact/contact.html" class="nav-link">Contact</a>
+          <div class="nav-user" id="navUser">
+            <div class="user-dropdown">
+              <button class="user-btn" id="userBtn">
+                <span class="user-name" id="userName">User</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdownMenu">
+                <a href="profile.html" class="dropdown-item"
+                  ><i class="fas fa-user"></i> Profile</a
+                >
+                <a href="../create-post/create-post.html" class="dropdown-item"
+                  ><i class="fas fa-edit"></i> Write Post</a
+                >
+                <a href="../settings/settings.html" class="dropdown-item"
+                  ><i class="fas fa-cog"></i> Settings</a
+                >
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" id="logoutBtn"
+                  ><i class="fas fa-sign-out-alt"></i> Logout</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Toggle navigation menu"
+          title="Toggle navigation menu"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Loading State -->
+    <div class="loading-container" id="loadingContainer">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading profile...</span>
+      </div>
+    </div>
+
+    <!-- Not Logged In State -->
+    <div class="not-logged-in hidden" id="notLoggedIn">
+      <div class="container">
+        <div class="empty-state">
+          <i class="fas fa-user-lock"></i>
+          <h2>Please Log In</h2>
+          <p>You need to be logged in to view your profile</p>
+          <a href="../login/login.html" class="btn btn-primary btn-lg">
+            <i class="fas fa-sign-in-alt"></i>
+            Log In
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content hidden" id="mainContent">
+      <div class="container">
+        <!-- Profile Header -->
+        <section class="profile-header">
+          <div class="profile-info">
+            <div class="profile-avatar-section">
+              <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="profile-details">
+                <h1 class="profile-name" id="profileName">User Name</h1>
+                <p class="profile-username" id="profileUsername">@username</p>
+                <p class="profile-bio" id="profileBio">Bio will appear here</p>
+                <div class="profile-meta">
+                  <span class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    Joined <span id="joinDate">Recently</span>
+                  </span>
+                  <span class="meta-item">
+                    <i class="fas fa-envelope"></i>
+                    <span id="profileEmail">email@example.com</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button class="btn btn-primary" id="editProfileBtn">
+                <i class="fas fa-edit"></i>
+                Edit Profile
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Profile Stats -->
+        <section class="profile-stats">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-value" id="postsCount">0</h3>
+              <p class="stat-label">Posts</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-heart"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-value" id="likesCount">0</h3>
+              <p class="stat-label">Likes Received</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-value" id="commentsCount">0</h3>
+              <p class="stat-label">Comments</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-eye"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-value" id="viewsCount">0</h3>
+              <p class="stat-label">Total Views</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Profile Tabs -->
+        <section class="profile-tabs">
+          <div class="tabs-header">
+            <button class="tab-btn active" data-tab="posts">
+              <i class="fas fa-file-alt"></i>
+              My Posts
+            </button>
+            <button class="tab-btn" data-tab="drafts">
+              <i class="fas fa-save"></i>
+              Drafts
+            </button>
+            <button class="tab-btn" data-tab="liked">
+              <i class="fas fa-heart"></i>
+              Liked Posts
+            </button>
+          </div>
+
+          <div class="tabs-content">
+            <!-- Posts Tab -->
+            <div class="tab-pane active" id="postsTab">
+              <div class="posts-header">
+                <h2>My Posts</h2>
+                <a
+                  href="../create-post/create-post.html"
+                  class="btn btn-primary"
+                >
+                  <i class="fas fa-plus"></i>
+                  New Post
+                </a>
+              </div>
+              <div class="posts-grid" id="postsGrid">
+                <div class="loading-posts">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <span>Loading posts...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drafts Tab -->
+            <div class="tab-pane" id="draftsTab">
+              <div class="posts-header">
+                <h2>Draft Posts</h2>
+              </div>
+              <div class="posts-grid" id="draftsGrid">
+                <div class="loading-posts">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <span>Loading drafts...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Liked Tab -->
+            <div class="tab-pane" id="likedTab">
+              <div class="posts-header">
+                <h2>Liked Posts</h2>
+              </div>
+              <div class="posts-grid" id="likedGrid">
+                <div class="loading-posts">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <span>Loading liked posts...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal hidden" id="editProfileModal">
+      <div class="modal-overlay" id="modalOverlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Edit Profile</h2>
+          <button
+            class="modal-close"
+            id="closeModal"
+            aria-label="Close edit profile modal"
+            title="Close"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Alert Container -->
+          <div id="modalAlertContainer" class="alert-container"></div>
+
+          <form id="editProfileForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="editFirstName" class="form-label">First Name</label>
+                <input
+                  type="text"
+                  id="editFirstName"
+                  class="form-input"
+                  placeholder="First name"
+                />
+              </div>
+              <div class="form-group">
+                <label for="editLastName" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  id="editLastName"
+                  class="form-input"
+                  placeholder="Last name"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="editUsername" class="form-label">Username</label>
+              <input
+                type="text"
+                id="editUsername"
+                class="form-input"
+                placeholder="Username"
+                disabled
+              />
+              <small class="form-hint">Username cannot be changed</small>
+            </div>
+
+            <div class="form-group">
+              <label for="editEmail" class="form-label">Email</label>
+              <input
+                type="email"
+                id="editEmail"
+                class="form-input"
+                placeholder="email@example.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="editBio" class="form-label">Bio</label>
+              <textarea
+                id="editBio"
+                class="form-textarea"
+                placeholder="Tell us about yourself..."
+                rows="4"
+                maxlength="500"
+              ></textarea>
+              <div class="char-count"><span id="bioCharCount">0</span>/500</div>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn btn-outline" id="cancelEdit">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <span class="btn-text">Save Changes</span>
+                <span class="btn-loading hidden">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  Saving...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3 class="footer-title">BlogSpace</h3>
+            <p class="footer-text">
+              Empowering writers to share their stories with the world.
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h4 class="footer-subtitle">Quick Links</h4>
+            <ul class="footer-links">
+              <li><a href="../home/home.html">Home</a></li>
+              <li><a href="../about/about.html">About</a></li>
+              <li><a href="../contact/contact.html">Contact</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4 class="footer-subtitle">Community</h4>
+            <ul class="footer-links">
+              <li><a href="#">Guidelines</a></li>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Report Issue</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2025 BlogSpace. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

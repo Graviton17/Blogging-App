@@ -34,8 +34,8 @@ class Post
             $counter++;
         }
 
-        $sql = "INSERT INTO posts (title, slug, content, excerpt, featured_image, author_id, status, visibility, published_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO posts (title, slug, content, excerpt, author_id, status, visibility, published_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $publishedAt = ($postData['status'] ?? 'draft') === 'published' ? date('Y-m-d H:i:s') : null;
 
@@ -44,7 +44,6 @@ class Post
             $slug,
             $postData['content'],
             $postData['excerpt'] ?? $this->generateExcerpt($postData['content']),
-            $postData['featured_image'] ?? null,
             $postData['author_id'],
             $postData['status'] ?? 'draft',
             $postData['visibility'] ?? 'public',
@@ -81,7 +80,7 @@ class Post
      */
     public function findById($id)
     {
-        $sql = "SELECT p.*, u.username, u.first_name, u.last_name, pr.avatar_url
+        $sql = "SELECT p.*, u.username, u.first_name, u.last_name
                 FROM posts p
                 JOIN users u ON p.author_id = u.id
                 LEFT JOIN profiles pr ON u.id = pr.user_id
@@ -159,7 +158,7 @@ class Post
             }
         }
         
-        $sql = "SELECT p.*, u.username, u.first_name, u.last_name, pr.avatar_url
+        $sql = "SELECT p.*, u.username, u.first_name, u.last_name
                 FROM posts p
                 JOIN users u ON p.author_id = u.id
                 LEFT JOIN profiles pr ON u.id = pr.user_id
@@ -217,7 +216,7 @@ class Post
      */
     public function update($id, $postData)
     {
-        $allowedFields = ['title', 'content', 'excerpt', 'featured_image', 'status', 'visibility'];
+        $allowedFields = ['title', 'content', 'excerpt', 'status', 'visibility'];
         $updateFields = [];
         $params = [];
 
